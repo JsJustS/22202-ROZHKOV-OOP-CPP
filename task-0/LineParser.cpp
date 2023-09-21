@@ -5,9 +5,6 @@
 #include "LineParser.h"
 
 string LineParser::next() {
-//    string substring = stringToParse.substr(initialPos, currentPos - initialPos);
-//    initialPos = currentPos + 1;
-//    currentPos = stringToParse.find(del, initialPos);
     string substring;
     size_t i;
     for (i = currentPos; i < stringToParse.length(); ++i) {
@@ -47,5 +44,4 @@ size_t LineParser::split(std::list<string> &strings) {
 void LineParser::clear() {
     stringToParse.clear();
     currentPos = 0;
-    initialPos = 0;
 }

@@ -16,12 +16,10 @@ private:
     string del;
     string stringToParse;
     size_t currentPos;
-    size_t initialPos;
 public:
     explicit LineParser(string delimiter) {
         del = std::move(delimiter);
         currentPos = 0;
-        initialPos = 0;
     }
 
     // Загрузить строку в парсер
