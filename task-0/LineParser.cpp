@@ -19,12 +19,12 @@ size_t LineParser::split(std::vector<string> &strings) {
     currentPos = stringToParse.find(del);
     strings.clear();
 
-    // Decompose statement
+    // Разбиваем строку на подстроки
     while(this->hasNext()) {
         strings.push_back(this->next());
     }
 
-    // Add the last one
+    // Не забываем добавить последний элемент
     strings.push_back(
             stringToParse.substr(
                     initialPos,
