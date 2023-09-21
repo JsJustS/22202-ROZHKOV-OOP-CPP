@@ -5,12 +5,11 @@
 #ifndef INC_22202_ROZHKOV_OOP_CPP_STATCOLLECTOR_H
 #define INC_22202_ROZHKOV_OOP_CPP_STATCOLLECTOR_H
 
-#include <utility>
-
-
+#include "utility"
 #include "string"
 #include "map"
 #include "vector"
+#include "algorithm"
 
 using std::string;
 class StatCollector {

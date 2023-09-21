@@ -14,9 +14,23 @@ size_t StatCollector::getWordStat(const string& word) {
 
 size_t StatCollector::loadAllWords(std::vector<string> &words) {
     size_t amount = 0;
+    std::vector<std::pair<string, size_t>> wordsAndValues;
     for (auto & it : dictionary) {
-        words.push_back(it.first);
-        amount++;
+        amount += it.second;
+        wordsAndValues.emplace_back(it.first, it.second);
     }
+
+    std::sort(
+            wordsAndValues.begin(),
+            wordsAndValues.end(),
+            [](auto &left, auto &right) {
+                return left.second < right.second;
+            }
+    );
+
+    for (auto & it : wordsAndValues) {
+        words.push_back(it.first);
+    }
+
     return amount;
 }
