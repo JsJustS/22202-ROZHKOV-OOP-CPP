@@ -3,24 +3,23 @@
 //
 
 #include "FileReader.h"
+#include "LineParser.h"
 
 int main() {
-    //std::cout << "# start" << std::endl;
     FileReader fileReader("test.txt");
-    //std::cout << "# create instance" << std::endl;
     fileReader.open();
-    //std::cout << "# open file" << std::endl;
 
+    LineParser parser(" ");
+    std::vector<string> myStrings;
     while (fileReader.hasNext()) {
-        //std::cout << "# checked next" << std::endl;
-        std::cout << fileReader.next() << std::endl;
+        parser.load(fileReader.next());
+        size_t x = parser.split(myStrings);
+        parser.clear();
+        for (int i = 0; i < x; i++) {
+            std::cout << myStrings[i] << ";";
+        }
+        std::cout << std::endl;
     }
-    //std::cout << "# again" << std::endl;
-    fileReader.reset();
-    while (fileReader.hasNext()) {
-        std::cout << fileReader.next() << std::endl;
-    }
-    //std::cout << "# stop" << std::endl;
     fileReader.close();
     return 0;
 }
