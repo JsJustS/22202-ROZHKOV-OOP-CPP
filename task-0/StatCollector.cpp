@@ -12,7 +12,7 @@ size_t StatCollector::getWordStat(const string& word) {
     return dictionary.find(word) != dictionary.end()? dictionary[word] : 0;
 }
 
-size_t StatCollector::loadAllWords(std::vector<string> &words) {
+size_t StatCollector::loadAllWords(std::vector<string> &words, bool reverse) {
     size_t amount = 0;
     std::vector<std::pair<string, size_t>> wordsAndValues;
     for (auto & it : dictionary) {
@@ -23,8 +23,8 @@ size_t StatCollector::loadAllWords(std::vector<string> &words) {
     std::sort(
             wordsAndValues.begin(),
             wordsAndValues.end(),
-            [](auto &left, auto &right) {
-                return left.second < right.second;
+            [&reverse](auto &left, auto &right) {
+                return (reverse) ? left.second < right.second : left.second > right.second;
             }
     );
 

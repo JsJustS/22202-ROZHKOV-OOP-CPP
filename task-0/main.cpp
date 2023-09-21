@@ -26,11 +26,11 @@ void collectStatistics(StatCollector* stat, const string& filename) {
     fileReader.close();
 }
 
-void createCSVFromStatistic(StatCollector* stat) {
+void createCSVFromStatistic(StatCollector* stat, const string& outputFilename, bool reverse) {
     std::vector<string> words;
-    size_t amountOfWords = stat->loadAllWords(words);
+    size_t amountOfWords = stat->loadAllWords(words, reverse);
 
-    CSVWriter csv("test.csv", ",");
+    CSVWriter csv(outputFilename, ",");
     csv.open();
     csv.addWord("Word").addWord("Frequency").addWord("Percentage").nextLine();
     for (const string& word : words) {
@@ -40,17 +40,28 @@ void createCSVFromStatistic(StatCollector* stat) {
     csv.save();
 }
 
-string parseFilename(const string& filename) {
-    assert(filename.substr(filename.length()-4) == ".txt");
-    return filename.substr(0, filename.length()-4) + ".csv";
-}
-
-int main() {
-    string inputFilename = "test.txt";
-    string outputFilename = parseFilename(inputFilename);
-
+int main(int argc, char* argv[]) {
+    // Проверяем инпут данные
+    if (argc < 2 || 4 < argc) return 1;
+    string inputFilename = (string)argv[1];
+    assert(inputFilename.substr(inputFilename.length()-4) == ".txt");
+    string outputFilename;
+    bool reversedSorting;
+    switch (argc) {
+        case 4:
+            reversedSorting = (string)argv[3] == "-r";
+        case 3:
+            outputFilename = (string)argv[2];
+            assert(outputFilename.substr(outputFilename.length()-4) == ".csv");
+            break;
+        case 2:
+            outputFilename = inputFilename.substr(0, inputFilename.length()-4) + ".csv";
+            break;
+        default: return 1;
+    }
+    // Начинаем работу с файлами
     StatCollector stat{};
     collectStatistics(&stat, inputFilename);
-    createCSVFromStatistic(&stat);
+    createCSVFromStatistic(&stat, outputFilename, reversedSorting);
     return 0;
 }

@@ -20,7 +20,7 @@ public:
 
     void add(const string& word);
 
-    size_t loadAllWords(std::vector<string> &words);
+    size_t loadAllWords(std::vector<string> &words, bool reverse);
 
     size_t getWordStat(const string& word);
 
