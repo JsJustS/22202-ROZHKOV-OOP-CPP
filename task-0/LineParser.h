@@ -20,7 +20,7 @@ private:
 public:
     explicit LineParser(string delimiter) {
         del = std::move(delimiter);
-        currentPos = std::string::npos;
+        currentPos = 0;
         initialPos = 0;
     }
 

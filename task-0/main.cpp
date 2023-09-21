@@ -11,7 +11,10 @@ void collectStatistics(StatCollector* stat, const string& filename) {
     FileReader fileReader(filename);
     fileReader.open();
 
-    LineParser parser(" ");
+    string alphabetEN = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    string alphabetRU = "абвгдеёжзийклмнопрстувхцчшщьъыэуяАБВГДЕЁЖЗИЙКЛМНОПРСТУВХЦЧШЩЬЯЫЭУЯ";
+    string numbers = "0123456789";
+    LineParser parser(numbers+alphabetEN+alphabetRU);
     std::list<string> myStrings;
 
     while (fileReader.hasNext()) {
@@ -41,8 +44,6 @@ void createCSVFromStatistic(StatCollector* stat, const string& outputFilename, b
 }
 
 int main(int argc, char* argv[]) {
-    //todo: anything that is not a letter nor number should be a delimiter.
-
     // Проверяем инпут данные
     if (argc < 2 || 4 < argc) return 1;
     string inputFilename = (string)argv[1];
