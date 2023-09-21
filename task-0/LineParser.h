@@ -5,10 +5,9 @@
 #ifndef INC_22202_ROZHKOV_OOP_CPP_LINEPARSER_H
 #define INC_22202_ROZHKOV_OOP_CPP_LINEPARSER_H
 
-#include <utility>
-
+#include "utility"
 #include "string"
-#include "vector"
+#include "list"
 
 using std::string;
 
@@ -40,6 +39,6 @@ public:
     bool hasNext() const;
 
     // Разбить строку на подстроки
-    size_t split(std::vector<string> &strings);
+    size_t split(std::list<string> &strings);
 };
 #endif //INC_22202_ROZHKOV_OOP_CPP_LINEPARSER_H

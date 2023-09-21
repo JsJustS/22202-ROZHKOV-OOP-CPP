@@ -15,7 +15,7 @@ bool LineParser::hasNext() const {
     return currentPos != std::string::npos;
 }
 
-size_t LineParser::split(std::vector<string> &strings) {
+size_t LineParser::split(std::list<string> &strings) {
     currentPos = stringToParse.find(del);
     strings.clear();
 

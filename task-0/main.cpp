@@ -12,22 +12,22 @@ void collectStatistics(StatCollector* stat, const string& filename) {
     fileReader.open();
 
     LineParser parser(" ");
-    std::vector<string> myStrings;
+    std::list<string> myStrings;
 
     while (fileReader.hasNext()) {
         parser.load(fileReader.next());
-        size_t x = parser.split(myStrings);
+        parser.split(myStrings);
         parser.clear();
 
-        for (int i = 0; i < x; i++) {
-            stat->add(myStrings[i]);
+        for (auto const& it: myStrings) {
+            stat->add(it);
         }
     }
     fileReader.close();
 }
 
 void createCSVFromStatistic(StatCollector* stat, const string& outputFilename, bool reverse) {
-    std::vector<string> words;
+    std::list<string> words;
     size_t amountOfWords = stat->loadAllWords(words, reverse);
 
     CSVWriter csv(outputFilename, ",");
@@ -41,12 +41,14 @@ void createCSVFromStatistic(StatCollector* stat, const string& outputFilename, b
 }
 
 int main(int argc, char* argv[]) {
+    //todo: anything that is not a letter nor number should be a delimiter.
+
     // Проверяем инпут данные
     if (argc < 2 || 4 < argc) return 1;
     string inputFilename = (string)argv[1];
     assert(inputFilename.substr(inputFilename.length()-4) == ".txt");
     string outputFilename;
-    bool reversedSorting;
+    bool reversedSorting = false;
     switch (argc) {
         case 4:
             reversedSorting = (string)argv[3] == "-r";

@@ -8,7 +8,7 @@
 #include "utility"
 #include "string"
 #include "map"
-#include "vector"
+#include "list"
 #include "algorithm"
 
 using std::string;
@@ -20,7 +20,7 @@ public:
 
     void add(const string& word);
 
-    size_t loadAllWords(std::vector<string> &words, bool reverse);
+    size_t loadAllWords(std::list<string> &words, bool reverse);
 
     size_t getWordStat(const string& word);
 
