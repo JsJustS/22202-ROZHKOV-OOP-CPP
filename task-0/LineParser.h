@@ -13,12 +13,10 @@ using std::string;
 
 class LineParser {
 private:
-    string del;
     string stringToParse;
     size_t currentPos;
 public:
-    explicit LineParser(string delimiter) {
-        del = std::move(delimiter);
+    explicit LineParser() {
         currentPos = 0;
     }
 

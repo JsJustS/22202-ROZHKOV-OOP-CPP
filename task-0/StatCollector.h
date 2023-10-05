@@ -16,7 +16,6 @@ class StatCollector {
 private:
     std::map<string, size_t> dictionary;
 public:
-    explicit StatCollector() = default;
 
     void add(const string& word);
 

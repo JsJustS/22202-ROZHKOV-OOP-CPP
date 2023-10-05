@@ -1,6 +1,8 @@
 #ifndef OOP_CPP_FILEREADER_H
 #define OOP_CPP_FILEREADER_H
 
+#include <utility>
+
 #include "utility"
 #include "string"
 #include "iostream"
@@ -14,8 +16,7 @@ private:
     string filename;
     ifstream f;
 public:
-    explicit FileReader(string fname) {
-        filename = std::move(fname);
+    explicit FileReader(string fname): filename(std::move(fname)) {
     }
 
     // открыть файл

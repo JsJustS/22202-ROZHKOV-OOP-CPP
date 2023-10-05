@@ -5,6 +5,7 @@
 #include "StatCollector.h"
 
 void StatCollector::add(const string& word) {
+    if (word.empty()) return;
     dictionary[word] = this->getWordStat(word) + 1;
 }
 
@@ -24,6 +25,7 @@ size_t StatCollector::loadAllWords(std::list<string> &words, bool reverse) {
         return (reverse) ? left.second < right.second : left.second > right.second;
     });
 
+    words.clear();
     for (auto & it : wordsAndValues) {
         words.push_back(it.first);
     }

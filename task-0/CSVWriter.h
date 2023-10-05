@@ -24,11 +24,8 @@ private:
 
     void ensureSplit();
 public:
-    explicit CSVWriter(string fname, string delimiter) {
-        assert(fname.substr(fname.length() - 4) == ".csv");
-        filename = std::move(fname);
-        del = std::move(delimiter);
-
+    explicit CSVWriter(string fname, string delimiter): filename(std::move(fname)), del(std::move(delimiter)) {
+        assert(filename.substr(filename.length() - 4) == ".csv");
         startOfLine = true;
     }
 
@@ -58,6 +55,10 @@ public:
     // закрыть и сохранить файл
     void save() {
         f.close();
+    }
+
+    bool isOpen() {
+        return f.is_open();
     }
 };
 #endif //INC_22202_ROZHKOV_OOP_CPP_CSVWRITER_H

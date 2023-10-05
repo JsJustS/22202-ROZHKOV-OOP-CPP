@@ -7,13 +7,15 @@
 string LineParser::next() {
     string substring;
     size_t i;
-    for (i = currentPos; i < stringToParse.length(); ++i) {
-        if (del.find(stringToParse[i]) == std::string::npos) {
-            break;
+    while (substring.empty() && currentPos < stringToParse.length()) {
+        for (i = currentPos; i < stringToParse.length(); ++i) {
+            if (!std::isalnum(stringToParse[i])) {
+                break;
+            }
+            substring += stringToParse[i];
         }
-        substring += stringToParse[i];
+        currentPos = i + 1;
     }
-    currentPos = i + 1;
     return substring;
 }
 
@@ -26,7 +28,9 @@ size_t LineParser::split(std::list<string> &strings) {
 
     // Разбиваем строку на подстроки
     while(this->hasNext()) {
-        strings.push_back(this->next());
+        string nextSub = this->next();
+        if (nextSub.empty()) continue;
+        strings.push_back(nextSub);
     }
 
     return strings.size();
