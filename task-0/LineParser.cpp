@@ -23,8 +23,8 @@ bool LineParser::hasNext() const {
     return currentPos < stringToParse.length();
 }
 
-size_t LineParser::split(std::list<string> &strings) {
-    strings.clear();
+std::list<string> LineParser::split() {
+    std::list<string> strings;
 
     // Разбиваем строку на подстроки
     while(this->hasNext()) {
@@ -33,10 +33,10 @@ size_t LineParser::split(std::list<string> &strings) {
         strings.push_back(nextSub);
     }
 
-    return strings.size();
+    return strings;
 }
 
-void LineParser::clear() {
+void LineParser::reset() {
     stringToParse.clear();
     currentPos = 0;
 }

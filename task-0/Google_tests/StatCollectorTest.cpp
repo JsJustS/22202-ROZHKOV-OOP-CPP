@@ -68,22 +68,21 @@ TEST(StatCollectorTests, AllWordsBehavior) {
     for (short i = 0; i < 15; i++) {stat.add(secondString);}
     for (short i = 0; i < 17; i++) {stat.add(thirdString);}
 
-    std::list<string> words;
-    size_t amountOfWords = stat.loadAllWords(words, false);
+    std::list<string> words = stat.getAll(false);
 
     std::list<string>::iterator it = words.begin();
 
-    ASSERT_EQ(amountOfWords, 45);
+    ASSERT_EQ(stat.getFullAmountOfWords(), 45);
     ASSERT_EQ(*it, thirdString);
     std::advance(it, 1);
     ASSERT_EQ(*it, secondString);
     std::advance(it, 1);
     ASSERT_EQ(*it, firstString);
 
-    size_t newAmountOfWords = stat.loadAllWords(words, true);
+    words = stat.getAll(true);
     it = words.begin();
 
-    ASSERT_EQ(newAmountOfWords, 45);
+    ASSERT_EQ(stat.getFullAmountOfWords(), 45);
     ASSERT_EQ(*it, firstString);
     std::advance(it, 1);
     ASSERT_EQ(*it, secondString);

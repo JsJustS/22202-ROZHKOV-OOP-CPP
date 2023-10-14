@@ -11,13 +11,9 @@ void collectStatistics(StatCollector* stat, const string& filename) {
     FileReader fileReader(filename);
     fileReader.open();
 
-    LineParser parser;
-    std::list<string> myStrings;
-
     do {
-        parser.load(fileReader.next());
-        parser.split(myStrings);
-        parser.clear();
+        LineParser parser(fileReader.next());
+        std::list<string> myStrings = parser.split();
 
         for (auto const& it: myStrings) {
             stat->add(it);
@@ -27,8 +23,8 @@ void collectStatistics(StatCollector* stat, const string& filename) {
 }
 
 void createCSVFromStatistic(StatCollector* stat, const string& outputFilename, bool reverse) {
-    std::list<string> words;
-    size_t amountOfWords = stat->loadAllWords(words, reverse);
+    std::list<string> words = stat->getAll(reverse);
+    size_t amountOfWords = stat->getFullAmountOfWords();
 
     CSVWriter csv(outputFilename, ",");
     csv.open();
@@ -49,13 +45,15 @@ int main(int argc, char* argv[]) {
     try {
         if (argc < 2 || 4 < argc) throw std::out_of_range("Wrong amount of arguments.");
         inputFilename = (string)argv[1];
-        if (inputFilename.substr(inputFilename.length()-4) != ".txt") throw std::invalid_argument("Input file is not in a .TXT format.");
+        if (inputFilename.substr(inputFilename.length()-4) != ".txt") throw std::invalid_argument(
+                "Input file is not in a .TXT format.");
         switch (argc) {
             case 4:
                 reversedSorting = (string)argv[3] == "-r";
             case 3:
                 outputFilename = (string)argv[2];
-                if (outputFilename.substr(outputFilename.length()-4) != ".csv") throw std::invalid_argument("Output file is not in a .CSV format.");
+                if (outputFilename.substr(outputFilename.length()-4) != ".csv") throw std::invalid_argument(
+                        "Output file is not in a .CSV format.");
                 break;
             case 2:
                 outputFilename = inputFilename.substr(0, inputFilename.length()-4) + ".csv";

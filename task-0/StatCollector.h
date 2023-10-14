@@ -19,9 +19,11 @@ public:
 
     void add(const string& word);
 
-    size_t loadAllWords(std::list<string> &words, bool reverse);
+    std::list<string> getAll(bool sortDirector);
 
     size_t getWordStat(const string& word);
+
+    size_t getFullAmountOfWords();
 
     void clear() {
         dictionary.clear();
