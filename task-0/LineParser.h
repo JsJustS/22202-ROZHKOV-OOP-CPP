@@ -18,6 +18,12 @@ private:
 
     // Ресетнуть парсер
     void reset();
+
+    // Вернуть новую подстроку
+    string next();
+
+    // Проверка на наличие следующей подстроки
+    bool hasNext() const;
 public:
     explicit LineParser(string str): stringToParse(std::move(str)) {
         currentPos = 0;
@@ -28,12 +34,6 @@ public:
         reset();
         stringToParse = std::move(str);
     }
-
-    // Вернуть новую подстроку
-    string next();
-
-    // Проверка на наличие следующей подстроки
-    bool hasNext() const;
 
     // Разбить строку на подстроки
     std::list<string> split();
