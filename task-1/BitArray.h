@@ -9,8 +9,9 @@
 #include <string>
 
 class BitArray {
+    typedef char BitContainerType;
 private:
-
+    BitContainerType* array;
 public:
     BitArray();
     ~BitArray();

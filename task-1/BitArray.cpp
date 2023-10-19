@@ -2,24 +2,38 @@
 // Created by Just on 19.10.2023.
 //
 
+#include <iostream>
 #include "BitArray.h"
 
 BitArray::BitArray() {
-
+    this->array = new BitContainerType;
+    this->clear();
 }
 
 BitArray::~BitArray() {
-
+    delete this->array;
 }
 
 //Конструирует массив, хранящий заданное количество бит.
 //Первые sizeof(long) бит можно инициализровать с помощью параметра value.
 BitArray::BitArray(int num_bits, unsigned long value) {
-
+    this->array = new BitContainerType[num_bits / sizeof(BitContainerType)
+                                         + ((num_bits % sizeof(BitContainerType))? 1: 0)];
+    int last_ind = num_bits - 1;
+    for (int i = last_ind; i >= 0; i--) {
+        bool bit = value % 2;
+        value = value >> 1;
+        this->set(i, bit);
+    }
 }
 
 BitArray::BitArray(const BitArray &b) {
-
+    int num_bits = b.size();
+    this->array = new BitContainerType[num_bits / sizeof(BitContainerType)
+                                       + ((num_bits % sizeof(BitContainerType))? 1: 0)];
+    for (int i = 0; i < b.size(); i++) {
+        this->set(i, b[i]);
+    }
 }
 
 void BitArray::swap(BitArray &b) {
@@ -27,7 +41,7 @@ void BitArray::swap(BitArray &b) {
 }
 
 BitArray &BitArray::operator=(const BitArray &b) {
-    return <#initializer#>;
+    return *this;
 }
 
 //Изменяет размер массива. В случае расширения, новые элементы
@@ -51,24 +65,24 @@ void BitArray::push_back(bool bit) {
 //Работают только на массивах одинакового размера.
 //Обоснование реакции на параметр неверного размера входит в задачу.
 BitArray &BitArray::operator&=(const BitArray &b) {
-    return <#initializer#>;
+    return *this;
 }
 
 BitArray &BitArray::operator|=(const BitArray &b) {
-    return <#initializer#>;
+    return *this;
 }
 
 BitArray &BitArray::operator^=(const BitArray &b) {
-    return <#initializer#>;
+    return *this;
 }
 
 //Битовый сдвиг с заполнением нулями.
 BitArray &BitArray::operator<<=(int n) {
-    return <#initializer#>;
+    return *this;
 }
 
 BitArray &BitArray::operator>>=(int n) {
-    return <#initializer#>;
+    return *this;
 }
 
 BitArray BitArray::operator<<(int n) const {
@@ -81,22 +95,22 @@ BitArray BitArray::operator>>(int n) const {
 
 //Устанавливает бит с индексом n в значение val.
 BitArray &BitArray::set(int n, bool val) {
-    return <#initializer#>;
+    return *this;
 }
 
 //Заполняет массив истиной.
 BitArray &BitArray::set() {
-    return <#initializer#>;
+    return *this;
 }
 
 //Устанавливает бит с индексом n в значение false.
 BitArray &BitArray::reset(int n) {
-    return <#initializer#>;
+    return *this;
 }
 
 //Заполняет массив ложью.
 BitArray &BitArray::reset() {
-    return <#initializer#>;
+    return *this;
 }
 
 //true, если массив содержит истинный бит.
