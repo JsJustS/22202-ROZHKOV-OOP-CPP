@@ -9,9 +9,14 @@
 #include <string>
 
 class BitArray {
-    typedef char BitContainerType;
+    typedef unsigned char BitContainerType;
 private:
     BitContainerType* array;
+    int amountOfBits;
+    int capacity;
+
+    static int bitsToBytes(int amountOfBits);
+    static int bytesToBits(int amountOfBytes);
 public:
     BitArray();
     ~BitArray();
