@@ -17,8 +17,6 @@ BitArray::~BitArray() {
     delete [] this->array;
 }
 
-//Конструирует массив, хранящий заданное количество бит.
-//Первые sizeof(long) бит можно инициализровать с помощью параметра value.
 BitArray::BitArray(int num_bits, unsigned long value) {
     this->amountOfBits = 0;
     this->capacity = num_bits;
@@ -33,8 +31,7 @@ BitArray::BitArray(int num_bits, unsigned long value) {
     }
 
     int initStart = (valueBitsLen > num_bits)? valueBitsLen - 1: num_bits - 1;
-
-    //for (int i = 0; i < num_bits; i++) {
+    
     for (int i = initStart; i >= 0; i--) {
         this->amountOfBits++;
         bool bit = value & (unsigned long)1;
@@ -48,33 +45,40 @@ BitArray::BitArray(const BitArray &b) {
     this->capacity = bytesToBits(bitsToBytes(b.size()));
     this->array = new BitContainerType[bitsToBytes(this->amountOfBits)];
     for (int i = 0; i < b.size(); i++) {
-        this->set(i, b[i]);
+        this->set(i, b.get(i));
     }
 }
 
 void BitArray::swap(BitArray &b) {
-    //todo: redo with consideration of capacity
-    int this_num_bits = this->size();
-    int other_num_bits = b.size();
+    int thisNumBits = this->size();
+    int otherNumBits = b.size();
 
-    BitContainerType *other_array = new BitContainerType[bitsToBytes(other_num_bits)];
+    BitContainerType *other_array = new BitContainerType[bitsToBytes(otherNumBits)];
 
-    b.resize(this_num_bits);
-    for (int i = 0; i < this_num_bits; i++) {
+    b.resize(thisNumBits);
+    for (int i = 0; i < thisNumBits; i++) {
         b.set(i, this->operator[](i));
     }
 
     delete [] this->array;
     this->array = other_array;
-    this->amountOfBits = other_num_bits;
+    this->amountOfBits = otherNumBits;
+    this->capacity = bitsToBytes(bytesToBits(otherNumBits));
 }
 
 BitArray &BitArray::operator=(const BitArray &b) {
+    this->amountOfBits = b.size();
+    this->capacity = bytesToBits(bitsToBytes(b.size()));
+
+    delete [] this->array;
+
+    this->array = new BitContainerType[bitsToBytes(this->amountOfBits)];
+    for (int i = 0; i < b.size(); i++) {
+        this->set(i, b.get(i));
+    }
     return *this;
 }
 
-//Изменяет размер массива. В случае расширения, новые элементы
-//инициализируются значением value.
 void BitArray::resize(int num_bits, bool value) {
     int newSize = bitsToBytes(num_bits);
     BitContainerType *newArray = new BitContainerType[newSize];
@@ -90,7 +94,6 @@ void BitArray::resize(int num_bits, bool value) {
     }
 }
 
-//Очищает массив.
 void BitArray::clear() {
     this->amountOfBits = 0;
     delete this->array;
@@ -98,46 +101,70 @@ void BitArray::clear() {
     this->array[0] = 0;
 }
 
-//Добавляет новый бит в конец массива. В случае необходимости
-//происходит перераспределение памяти.
 void BitArray::push_back(bool bit) {
-
+    this->set(this->size(), bit);
 }
 
-//Битовые операции над массивами.
-//Работают только на массивах одинакового размера.
-//Обоснование реакции на параметр неверного размера входит в задачу.
 BitArray &BitArray::operator&=(const BitArray &b) {
+    if (this->size() != b.size()) {throw std::length_error {"Size difference between two BitArrays."};}
+    for (int i = 0; i < this->size(); i++) {
+        this->set(i, (this->get(i) & b.get(i)));
+    }
     return *this;
 }
 
 BitArray &BitArray::operator|=(const BitArray &b) {
+    if (this->size() != b.size()) {throw std::length_error {"Size difference between two BitArrays."};}
+    for (int i = 0; i < this->size(); i++) {
+        this->set(i, (this->get(i) | b.get(i)));
+    }
     return *this;
 }
 
 BitArray &BitArray::operator^=(const BitArray &b) {
+    if (this->size() != b.size()) {throw std::length_error {"Size difference between two BitArrays."};}
+    for (int i = 0; i < this->size(); i++) {
+        this->set(i, (this->get(i) ^ b.get(i)));
+    }
     return *this;
 }
 
-//Битовый сдвиг с заполнением нулями.
 BitArray &BitArray::operator<<=(int n) {
+    for (int i = 0; i < this->size() - n; i++) {
+        this->set(i, this->get(i+n));
+    }
+    for (int i = this->size() - n; i < this->size(); i++) {
+        this->set(i, false);
+    }
     return *this;
 }
 
 BitArray &BitArray::operator>>=(int n) {
+    for (int i = this->size() - 1; i > n - 1; i--) {
+        this->set(i, this->operator[](i-n));
+    }
+    for (int i = 0; i < n; i++) {
+        this->set(i, false);
+    }
     return *this;
 }
 
 BitArray BitArray::operator<<(int n) const {
-    return BitArray();
+    BitArray newArray(*this);
+    newArray <<= n;
+    return newArray;
 }
 
 BitArray BitArray::operator>>(int n) const {
-    return BitArray();
+    BitArray newArray(*this);
+    newArray >>= n;
+    return newArray;
 }
 
-//Устанавливает бит с индексом n в значение val.
 BitArray &BitArray::set(int n, bool val) {
+    if ((n+1) > this->capacity) {
+        this->resize(n+1);
+    }
     BitContainerType container = this->array[bitsToBytes(n + 1) - 1];
     int delta = sizeof(BitContainerType)*8 - (n % (sizeof(BitContainerType)*8)) - 1;
     container = (container & ~((BitContainerType)1 << delta)) | ((BitContainerType)val << delta);
@@ -145,7 +172,6 @@ BitArray &BitArray::set(int n, bool val) {
     return *this;
 }
 
-//Заполняет массив истиной.
 BitArray &BitArray::set() {
     int size = bitsToBytes(this->capacity);
     for (int i = 0; i < size; i++) {
@@ -154,13 +180,11 @@ BitArray &BitArray::set() {
     return *this;
 }
 
-//Устанавливает бит с индексом n в значение false.
 BitArray &BitArray::reset(int n) {
     this->set(n, false);
     return *this;
 }
 
-//Заполняет массив ложью.
 BitArray &BitArray::reset() {
     int size = bitsToBytes(this->capacity);
     for (int i = 0; i < size; i++) {
@@ -169,47 +193,41 @@ BitArray &BitArray::reset() {
     return *this;
 }
 
-//true, если массив содержит истинный бит.
 bool BitArray::any() const {
     for (int i = 0; i < this->size(); i++) {
-        if (this->operator[](i)) return true;
+        if (this->get(i)) return true;
     }
     return false;
 }
 
-//true, если все биты массива ложны.
 bool BitArray::none() const {
     for (int i = 0; i < this->size(); i++) {
-        if (this->operator[](i)) return false;
+        if (this->get(i)) return false;
     }
     return true;
 }
 
-//Битовая инверсия
 BitArray BitArray::operator~() const {
     BitArray b(this->size());
     for (int i = 0; i < this->size(); i++) {
-        b.set(i, !this->operator[](i));
+        b.set(i, !this->get(i));
     }
     return b;
 }
 
-//Подсчитывает количество единичных бит.
 int BitArray::count() const {
     int amount = 0;
     for (int i = 0; i < this->size(); i++) {
-        if (this->operator[](i)) {
+        if (this->get(i)) {
             amount += 1;
         }
     }
     return amount;
 }
 
-//Возвращает значение бита по индексу i.
-bool BitArray::operator[](int i) const {
-    BitContainerType container = this->array[bitsToBytes(i + 1) - 1]; // 0
-    int containerIndex = i % (sizeof(BitContainerType)*8);
-    return (container & (1 << (sizeof(BitContainerType)*8 - containerIndex - 1))) != 0;
+BitArray::Wrapper BitArray::operator[] (int i) {
+    if (i < 0 || i >= size()) {throw std::out_of_range("invalid index");}
+    return Wrapper(this, i);
 }
 
 int BitArray::size() const {
@@ -220,11 +238,10 @@ bool BitArray::empty() const {
     return this->size() == 0;
 }
 
-//Возвращает строковое представление массива.
 std::string BitArray::to_string() const {
     std::string string;
     for (int i = 0; i < this->size(); i++) {
-        string += ((this->operator[](i))?"1":"0");
+        string += ((this->get(i))?"1":"0");
     }
     return string;
 }
@@ -237,4 +254,59 @@ int BitArray::bitsToBytes(int amountOfBits) {
 int BitArray::bytesToBits(int amountOfBytes) {
     if (amountOfBytes < 0) return 0;
     return sizeof(BitContainerType) * 8 * amountOfBytes;
+}
+
+bool BitArray::get(int n) const{
+    BitContainerType container = this->array[bitsToBytes(n + 1) - 1];
+    int containerIndex = n % (sizeof(BitContainerType)*8);
+    return (container & (1 << (sizeof(BitContainerType)*8 - containerIndex - 1))) != 0;
+}
+
+BitArray::Wrapper &BitArray::Wrapper::operator=(bool value) {
+    this->array->set(this->index, value);
+    return *this;
+}
+
+BitArray::Wrapper &BitArray::Wrapper::operator=(const BitArray::Wrapper &other) {
+    this->array->set(this->index, other.operator bool());
+    return *this;
+}
+
+BitArray::Wrapper::operator bool() const {
+    return this->array->get(this->index);
+}
+
+BitArray::Wrapper::Wrapper(BitArray *arr, int ind) {
+    this->array = arr;
+    this->index = ind;
+}
+
+bool operator==(const BitArray &a, const BitArray &b) {
+    if (a.size() != b.size()) return false;
+    for (int i = 0; i < a.size(); i++) {
+        if (a.get(i) != b.get(i)) return false;
+    }
+    return true;
+}
+
+bool operator!=(const BitArray &a, const BitArray &b) {
+    return !(a == b);
+}
+
+BitArray operator&(const BitArray& b1, const BitArray& b2) {
+    BitArray newArray = BitArray(b1);
+    newArray &= b2;
+    return newArray;
+}
+
+BitArray operator|(const BitArray& b1, const BitArray& b2) {
+    BitArray newArray = BitArray(b1);
+    newArray |= b2;
+    return newArray;
+}
+
+BitArray operator^(const BitArray& b1, const BitArray& b2) {
+    BitArray newArray = BitArray(b1);
+    newArray ^= b2;
+    return newArray;
 }
