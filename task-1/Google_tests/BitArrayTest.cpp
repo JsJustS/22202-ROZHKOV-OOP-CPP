@@ -42,12 +42,33 @@ TEST(BitArrayTestSuite, ConstructorTest) {
 }
 
 TEST(BitArrayTestSuite, ModifyingTest) {
-    //
+
 }
 
 TEST(BitArrayTestSuite, ExtractingTest) {
-    //get
-    //operator[]
+    BitArray array(5, 19); // 10011
+    ASSERT_EQ(array.to_string(), "10011");
+    ASSERT_EQ(array.empty(), false);
+    ASSERT_EQ(array.any(), true);
+    ASSERT_EQ(array.none(), false);
+    ASSERT_EQ(array.count(), 3);
+    ASSERT_EQ(array.size(), 5);
+
+    BitArray emptyArray = BitArray();
+    ASSERT_EQ(emptyArray.to_string(), "");
+    ASSERT_EQ(emptyArray.empty(), true);
+    ASSERT_EQ(emptyArray.any(), false);
+    ASSERT_EQ(emptyArray.none(), true);
+    ASSERT_EQ(emptyArray.count(), 0);
+    ASSERT_EQ(emptyArray.size(), 0);
+
+    BitArray fullArray = BitArray(5, 31);
+    ASSERT_EQ(fullArray.to_string(), "11111");
+    ASSERT_EQ(fullArray.empty(), false);
+    ASSERT_EQ(fullArray.any(), true);
+    ASSERT_EQ(fullArray.none(), false);
+    ASSERT_EQ(fullArray.count(), 5);
+    ASSERT_EQ(fullArray.size(), 5);
 }
 
 TEST(BitArrayTestSuite, OperatorTest) {
