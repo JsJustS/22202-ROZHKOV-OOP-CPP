@@ -27,16 +27,16 @@ BitArray::BitArray(int num_bits, unsigned long value) {
     int valueBitsLen = ceil(log2(value));
 
     if (num_bits < valueBitsLen) {
-        value = value << (sizeof(BitContainerType)*8 - num_bits);
+        value = value >> (valueBitsLen - num_bits);
     }
-
-    int initStart = (valueBitsLen > num_bits)? valueBitsLen - 1: num_bits - 1;
     
-    for (int i = initStart; i >= 0; i--) {
-        this->amountOfBits++;
+    for (int i = num_bits - 1; i >= 0; i--) {
         bool bit = value & (unsigned long)1;
         value = value >> 1;
-        this->set(i, bit);
+        if (i < num_bits) {
+            this->set(i, bit);
+            this->amountOfBits++;
+        }
     }
 }
 

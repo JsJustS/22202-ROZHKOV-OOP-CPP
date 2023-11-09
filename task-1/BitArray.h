@@ -8,6 +8,10 @@
 
 #include <string>
 
+/**
+ * The implementation of Bit Array.
+ * Uses BitContainerType as a container for bits, implementation specified.
+ * */
 class BitArray {
     typedef unsigned char BitContainerType;
 private:
@@ -148,7 +152,7 @@ public:
     //Работают только на массивах одинакового размера.
     //Обоснование реакции на параметр неверного размера входит в задачу.
     /**
-     * Assigning Bit AND operator
+     * Assigning Bitwise AND operator
      * Applies bit AND to left and right values, then stores result
      * in lvalue BitArray instance.
      *
@@ -159,7 +163,7 @@ public:
      * */
     BitArray& operator&=(const BitArray& b);
     /**
-     * Assigning Bit OR operator
+     * Assigning Bitwise OR operator
      * Applies bit OR to left and right values, then stores result
      * in lvalue BitArray instance.
      *
@@ -170,7 +174,7 @@ public:
      * */
     BitArray& operator|=(const BitArray& b);
     /**
-     * Assigning Bit XOR operator
+     * Assigning Bitwise XOR operator
      * Applies bit XOR to left and right values, then stores result
      * in lvalue BitArray instance.
      *
@@ -183,7 +187,7 @@ public:
 
     //Битовый сдвиг с заполнением нулями.
     /**
-     * Assigning Bit Left-Shift operator for BitArray.
+     * Assigning Bitwise Left-Shift operator for BitArray.
      * Shifts bits inside of array to the left for specified amount of positions.
      * Freed spaces is filled with false bits (0).
      *
@@ -192,7 +196,7 @@ public:
      * */
     BitArray& operator<<=(int n);
     /**
-     * Assigning Bit Right-Shift operator for BitArray.
+     * Assigning Bitwise Right-Shift operator for BitArray.
      * Shifts bits inside of array to the right for specified amount of positions.
      * Freed spaces is filled with false bits (0).
      *
@@ -201,7 +205,7 @@ public:
      * */
     BitArray& operator>>=(int n);
     /**
-     * Bit Left-Shift operator for BitArray.
+     * Bitwise Left-Shift operator for BitArray.
      * Shifts bits inside of array to the left for specified amount of positions.
      * Freed spaces is filled with false bits (0).
      *
@@ -210,7 +214,7 @@ public:
      * */
     BitArray operator<<(int n) const;
     /**
-     * Bit Right-Shift operator for BitArray.
+     * Bitwise Right-Shift operator for BitArray.
      * Shifts bits inside of array to the right for specified amount of positions.
      * Freed spaces is filled with false bits (0).
      *
@@ -267,7 +271,7 @@ public:
      * */
     bool none() const;
     /**
-     * Inverting operator for BitArray.
+     * Bitwise COMPLEMENT operator for BitArray.
      *
      * @return New BitArray instance with result.
      * */
@@ -325,7 +329,7 @@ bool operator==(const BitArray & a, const BitArray & b);
 bool operator!=(const BitArray & a, const BitArray & b);
 
 /**
- * Bit AND operator for BitArray.
+ * Bitwise AND operator for BitArray.
  * Works only on arrays of same size.
  *
  * @param b - instance of BitArray to use AND operator with.
@@ -333,7 +337,7 @@ bool operator!=(const BitArray & a, const BitArray & b);
  * */
 BitArray operator&(const BitArray& b1, const BitArray& b2);
 /**
- * Bit OR operator for BitArray.
+ * Bitwise OR operator for BitArray.
  * Works only on arrays of same size.
  *
  * @param b - instance of BitArray to use OR operator with.
@@ -341,7 +345,7 @@ BitArray operator&(const BitArray& b1, const BitArray& b2);
  * */
 BitArray operator|(const BitArray& b1, const BitArray& b2);
 /**
- * Bit XOR operator for BitArray.
+ * Bitwise XOR operator for BitArray.
  * Works only on arrays of same size.
  *
  * @param b - instance of BitArray to use XOR operator with.
