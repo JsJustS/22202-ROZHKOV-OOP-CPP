@@ -318,7 +318,7 @@ public:
     std::string to_string() const;
 
     /**
-     * @return String representation of this BitArray instance.
+     * @return std::vector of BitContainerType elements representing current BitArray instance.
      * */
     std::vector<BitContainerType> to_vector() const;
 };
