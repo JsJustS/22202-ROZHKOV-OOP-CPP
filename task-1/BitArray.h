@@ -7,6 +7,7 @@
 
 
 #include <string>
+#include <vector>
 
 /**
  * The implementation of Bit Array.
@@ -15,8 +16,12 @@
 class BitArray {
     typedef unsigned char BitContainerType;
 private:
+    // Internal dynamic array of Container Type. Bits are stored inside of numbers,
+    // which are stored in containers chosen by implementation.
     BitContainerType* array;
+    // Current number of bits we contain at given moment.
     int amountOfBits;
+    // Maximum number of bits we can contain without a resize.
     int capacity;
 
     /**
@@ -33,6 +38,14 @@ private:
     * @return Converted number of bites.
     */
     static int bytesToBits(int amountOfBytes);
+
+    /**
+    * Align given number of bits to a container size.
+    *
+    * @param amountOfBytes - the number of bits we need to align.
+    * @return Aligned number of bites.
+    */
+    static int roundBitsToContainer(int amountOfBits);
 
     /**
      * The implementation of wrapper that is used when index operator is called.
@@ -303,6 +316,11 @@ public:
      * @return String representation of this BitArray instance.
      * */
     std::string to_string() const;
+
+    /**
+     * @return String representation of this BitArray instance.
+     * */
+    std::vector<BitContainerType> to_vector() const;
 };
 
 
