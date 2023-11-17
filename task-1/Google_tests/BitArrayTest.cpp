@@ -4,7 +4,6 @@
 #include "gtest/gtest.h"
 #include "../BitArray.h"
 
-#include <crtdbg.h>
 #define BitContainerType unsigned char
 
 TEST(BitArrayTestSuite, ConstructorTest) {
@@ -143,6 +142,10 @@ TEST(BitArrayTestSuite, OperatorTest) {
     ASSERT_EQ(a[1], b[4]);
     ASSERT_EQ(a[0], b[0]);
     ASSERT_ANY_THROW(a[42]);
+
+    a.clear();
+    a[0] = true;
+    a[9] = true;
 
     ASSERT_EQ("10011", (~a).to_string());
 }

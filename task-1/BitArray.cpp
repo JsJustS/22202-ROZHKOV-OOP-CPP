@@ -7,24 +7,26 @@
 #include "BitArray.h"
 
 BitArray::BitArray() {
-    this->array = new BitContainerType;
+    this->array = nullptr;
     this->capacity = bytesToBits(sizeof(BitContainerType));
     this->reset();
     this->amountOfBits = 0;
 }
 
 BitArray::~BitArray() {
-    delete [] this->array;
+    if (this->amountOfBits > 0) {
+        delete [] this->array;
+    }
 }
 
 BitArray::BitArray(int num_bits, unsigned long value) {
-    this->amountOfBits = 0;
-    this->capacity = roundBitsToContainer(num_bits);
+    int valueBitsLen = ceil(log2(value));
+    this->amountOfBits = (num_bits > valueBitsLen) ? valueBitsLen: num_bits;
+
+    this->capacity = roundBitsToContainer(this->amountOfBits);
     int containerAmount = bitsToBytes(num_bits);
     this->array = new BitContainerType[containerAmount];
     this->reset();
-
-    int valueBitsLen = ceil(log2(value));
 
     if (num_bits < valueBitsLen) {
         value = value >> (valueBitsLen - num_bits);
@@ -71,6 +73,10 @@ void BitArray::swap(BitArray &b) {
 }
 
 BitArray &BitArray::operator=(const BitArray &b) {
+    if (this == &b) {
+        return *this;
+    }
+    
     this->amountOfBits = b.size();
     this->capacity = roundBitsToContainer(b.size());
 
@@ -97,15 +103,12 @@ void BitArray::resize(int num_bits, bool value) {
         this->set(i, value);
     }
     this->amountOfBits = num_bits;
-
-
 }
 
 void BitArray::clear() {
     this->amountOfBits = 0;
     delete this->array;
-    this->array = new BitContainerType;
-    this->array[0] = 0;
+    this->array = nullptr;
 }
 
 void BitArray::push_back(bool bit) {
@@ -170,9 +173,18 @@ BitArray BitArray::operator>>(int n) const {
 }
 
 BitArray &BitArray::set(int n, bool val) {
+    // size() отвечает за последний ненулевой бит, который мы заносили
+    this->amountOfBits = (n+1 > this->amountOfBits) ? n+1 : this->amountOfBits;
+
     if ((n+1) > this->capacity) {
+        if (!val) {
+            // Бит с индексом False, запоминать не обязательно
+            return *this;
+        }
+        // Бит с индексом True, его надо запомнить
         this->resize(n+1);
     }
+
     BitContainerType container = this->array[bitsToBytes(n + 1) - 1];
     int delta = sizeof(BitContainerType)*8 - (n % (sizeof(BitContainerType)*8)) - 1;
     container = (container & ~((BitContainerType)1 << delta)) | ((BitContainerType)val << delta);
@@ -234,7 +246,7 @@ int BitArray::count() const {
 }
 
 BitArray::Wrapper BitArray::operator[] (int i) {
-    if (i < 0 || i >= size()) {throw std::out_of_range("invalid index");}
+    if (i < 0) {throw std::out_of_range("invalid index");}
     return Wrapper(this, i);
 }
 
@@ -290,6 +302,12 @@ BitArray::Wrapper &BitArray::Wrapper::operator=(const BitArray::Wrapper &other) 
 }
 
 BitArray::Wrapper::operator bool() const {
+    // Берём бит вне выделенной памяти
+    // Очевидно, что мы его либо не вносили, либо сузили
+    // Значит, что там false по определению.
+    if (this->index > this->array->size()-1) {
+        return false;
+    }
     return this->array->get(this->index);
 }
 
