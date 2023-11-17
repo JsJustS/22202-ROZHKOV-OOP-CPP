@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <cmath>
+#include <iterator>
 #include "BitArray.h"
 
 BitArray::BitArray() {
@@ -37,7 +38,6 @@ BitArray::BitArray(int num_bits, unsigned long value) {
         value = value >> 1;
         if (i < num_bits) {
             this->set(i, bit);
-            this->amountOfBits++;
         }
     }
 }
@@ -91,29 +91,34 @@ BitArray &BitArray::operator=(const BitArray &b) {
 
 void BitArray::resize(int num_bits, bool value) {
     int newSize = bitsToBytes(num_bits);
-    BitContainerType *newArray = new BitContainerType[newSize];
+    BitContainerType *newArray = new BitContainerType[newSize]();
 
-    memcpy(newArray, this->array, newSize * sizeof(BitContainerType));
+    if (this->array != nullptr) {
+        int copySize = (newSize < bitsToBytes(this->capacity)) ? newSize : bitsToBytes(this->capacity);
+        memcpy(newArray, this->array, copySize * sizeof(BitContainerType));
+        delete [] this->array;
+    }
 
     this->capacity = roundBitsToContainer(num_bits);
-    delete [] this->array;
     this->array = newArray;
 
-    for (int i = this->size(); i < num_bits; i++) {
-        this->set(i, value);
+    if (value) {
+        for (int i = this->size(); i < num_bits; i++) {
+            this->set(i, true);
+        }
     }
     this->amountOfBits = num_bits;
 }
 
 void BitArray::clear() {
     this->amountOfBits = 0;
+    this->capacity = 0;
     delete this->array;
     this->array = nullptr;
 }
 
 void BitArray::push_back(bool bit) {
     this->set(this->size(), bit);
-    this->amountOfBits++;
 }
 
 BitArray &BitArray::operator&=(const BitArray &b) {
@@ -173,7 +178,6 @@ BitArray BitArray::operator>>(int n) const {
 }
 
 BitArray &BitArray::set(int n, bool val) {
-    // size() отвечает за последний ненулевой бит, который мы заносили
     this->amountOfBits = (n+1 > this->amountOfBits) ? n+1 : this->amountOfBits;
 
     if ((n+1) > this->capacity) {
@@ -189,6 +193,19 @@ BitArray &BitArray::set(int n, bool val) {
     int delta = sizeof(BitContainerType)*8 - (n % (sizeof(BitContainerType)*8)) - 1;
     container = (container & ~((BitContainerType)1 << delta)) | ((BitContainerType)val << delta);
     this->array[bitsToBytes(n + 1) - 1] = container;
+
+    if (!val) {
+        int toFree = 0;
+        for (int i = bitsToBytes(this->capacity) - 1; i > 0; i--) {
+            if (this->array[i] != 0) {
+                break;
+            }
+            toFree++;
+        }
+        if (toFree > 0) {
+            shrink(bitsToBytes(this->capacity) - toFree);
+        }
+    }
     return *this;
 }
 
@@ -277,6 +294,9 @@ int BitArray::bytesToBits(int amountOfBytes) {
 }
 
 bool BitArray::get(int n) const{
+    if (n + 1> this->capacity || n > this->amountOfBits) {
+        return false;
+    }
     BitContainerType container = this->array[bitsToBytes(n + 1) - 1];
     int containerIndex = n % (sizeof(BitContainerType)*8);
     return (container & (1 << (sizeof(BitContainerType)*8 - containerIndex - 1))) != 0;
@@ -289,6 +309,21 @@ int BitArray::roundBitsToContainer(int amountOfBits) {
 std::vector<BitArray::BitContainerType> BitArray::to_vector() const {
     if (this->size() == 0) return std::vector<BitContainerType>();
     return std::vector<BitContainerType>(this->array, this->array + bitsToBytes(this->capacity));
+}
+
+int BitArray::cap() const {
+    return this->capacity;
+}
+
+void BitArray::shrink(int size) {
+    if (this->array == nullptr) {throw std::runtime_error("Trying to shrink empty array");}
+
+    BitContainerType *newArray = new BitContainerType[size]();
+    memcpy(newArray, this->array, size * sizeof(BitContainerType));
+    delete [] this->array;
+
+    this->capacity = bytesToBits(size);
+    this->array = newArray;
 }
 
 BitArray::Wrapper &BitArray::Wrapper::operator=(bool value) {

@@ -88,6 +88,7 @@ TEST(BitArrayTestSuite, ExtractingTest) {
     ASSERT_EQ(array.none(), false);
     ASSERT_EQ(array.count(), 3);
     ASSERT_EQ(array.size(), 5);
+    ASSERT_EQ(array.cap(), 8);
 
     BitArray emptyArray = BitArray();
     std::vector<BitContainerType> emptyVector;
@@ -98,6 +99,7 @@ TEST(BitArrayTestSuite, ExtractingTest) {
     ASSERT_EQ(emptyArray.none(), true);
     ASSERT_EQ(emptyArray.count(), 0);
     ASSERT_EQ(emptyArray.size(), 0);
+    ASSERT_EQ(array.cap(), 0);
 
     BitArray fullArray = BitArray(5, 31);
     std::vector<BitContainerType> fullVector{248};
@@ -108,6 +110,7 @@ TEST(BitArrayTestSuite, ExtractingTest) {
     ASSERT_EQ(fullArray.none(), false);
     ASSERT_EQ(fullArray.count(), 5);
     ASSERT_EQ(fullArray.size(), 5);
+    ASSERT_EQ(array.cap(), 8);
 }
 
 TEST(BitArrayTestSuite, OperatorTest) {
@@ -115,7 +118,7 @@ TEST(BitArrayTestSuite, OperatorTest) {
     BitArray b(5, 12); // 01100
     ASSERT_EQ(a == b, false);
     ASSERT_EQ(a != b, true);
-
+    b = b;
     a = b;
     ASSERT_EQ(a.to_string(), b.to_string());
     ASSERT_EQ(a == b, true);
@@ -141,11 +144,34 @@ TEST(BitArrayTestSuite, OperatorTest) {
 
     ASSERT_EQ(a[1], b[4]);
     ASSERT_EQ(a[0], b[0]);
-    ASSERT_ANY_THROW(a[42]);
+    a[0] = b[4];
+    ASSERT_EQ(a[0], b[4]);
+
+    a.clear();
+    a[0] = true;
+    a[9] = false;
+
+    ASSERT_EQ(a.size(), 10);
+    ASSERT_EQ(a.cap(), 8);
+
+    a[10] = true;
+
+    ASSERT_EQ(a.size(), 11);
+    ASSERT_EQ(a.cap(), 16);
+
+    ASSERT_EQ(a[424242], false);
+
+    ASSERT_EQ("01111111110", (~a).to_string());
 
     a.clear();
     a[0] = true;
     a[9] = true;
 
-    ASSERT_EQ("10011", (~a).to_string());
+    ASSERT_EQ(a.size(), 10);
+    ASSERT_EQ(a.cap(), 16);
+
+    a[9] = false;
+
+    ASSERT_EQ(a.size(), 10);
+    ASSERT_EQ(a.cap(), 8);
 }

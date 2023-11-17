@@ -19,9 +19,9 @@ private:
     // Internal dynamic array of Container Type. Bits are stored inside of numbers,
     // which are stored in containers chosen by implementation.
     BitContainerType* array;
-    // Current number of bits we contain at given moment.
+    // Index of the last bit in the array (0 or 1) + 1.
     int amountOfBits;
-    // Maximum number of bits we can contain without a resize.
+    // Maximum number of true bits we can contain without a resize.
     int capacity;
 
     /**
@@ -62,8 +62,6 @@ private:
          * */
         Wrapper(BitArray* arr, int ind);
 
-        //Wrapper(const Wrapper& other);
-
         /**
          * Simple assignment operator.
          * We use this when we want to set new value to the BitArray on chosen index.
@@ -99,6 +97,12 @@ private:
          * */
         operator bool() const;
     };
+    /**
+     * shrinks inner array to specified size
+     *
+     * @param size - new size of the array
+     * */
+    void shrink(int size);
 public:
     /**
      * Simple BitArray constructor.
@@ -307,6 +311,10 @@ public:
      * @return Number of bits stored inside.
      * */
     int size() const;
+    /**
+     * @return Number of bits stored inside.
+     * */
+    int cap() const;
     /**
      * @return True, if array is empty.
      * */
