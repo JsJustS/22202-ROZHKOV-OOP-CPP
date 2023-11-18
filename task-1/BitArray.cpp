@@ -9,13 +9,12 @@
 
 BitArray::BitArray() {
     this->array = nullptr;
-    this->capacity = bytesToBits(sizeof(BitContainerType));
-    this->reset();
+    this->capacity = 0;
     this->amountOfBits = 0;
 }
 
 BitArray::~BitArray() {
-    if (this->amountOfBits > 0) {
+    if (this->amountOfBits > 0 && this->array != nullptr) {
         delete [] this->array;
     }
 }
@@ -44,10 +43,11 @@ BitArray::BitArray(int num_bits, unsigned long value) {
 
 BitArray::BitArray(const BitArray &b) {
     this->amountOfBits = b.size();
-    this->capacity = roundBitsToContainer(b.size());
-    this->array = new BitContainerType[bitsToBytes(this->amountOfBits)];
-    for (int i = 0; i < b.size(); i++) {
-        this->set(i, b.get(i));
+    this->capacity = b.cap();
+    std::vector<BitContainerType> bArray = b.to_vector();
+    this->array = new BitContainerType[bitsToBytes(this->capacity)];
+    for (int i = 0; i < bitsToBytes(this->capacity); i++) {
+        this->array[i] = bArray[i];
     }
 }
 

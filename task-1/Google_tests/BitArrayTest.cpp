@@ -99,7 +99,7 @@ TEST(BitArrayTestSuite, ExtractingTest) {
     ASSERT_EQ(emptyArray.none(), true);
     ASSERT_EQ(emptyArray.count(), 0);
     ASSERT_EQ(emptyArray.size(), 0);
-    ASSERT_EQ(array.cap(), 0);
+    ASSERT_EQ(emptyArray.cap(), 0);
 
     BitArray fullArray = BitArray(5, 31);
     std::vector<BitContainerType> fullVector{248};
@@ -110,7 +110,7 @@ TEST(BitArrayTestSuite, ExtractingTest) {
     ASSERT_EQ(fullArray.none(), false);
     ASSERT_EQ(fullArray.count(), 5);
     ASSERT_EQ(fullArray.size(), 5);
-    ASSERT_EQ(array.cap(), 8);
+    ASSERT_EQ(fullArray.cap(), 8);
 }
 
 TEST(BitArrayTestSuite, OperatorTest) {
