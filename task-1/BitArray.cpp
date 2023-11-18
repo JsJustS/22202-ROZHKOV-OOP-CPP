@@ -2,7 +2,6 @@
 // Created by Just on 19.10.2023.
 //
 
-#include <iostream>
 #include <cmath>
 #include <iterator>
 #include "BitArray.h"
