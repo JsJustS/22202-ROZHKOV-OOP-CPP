@@ -5,7 +5,7 @@
 #ifndef TASK_2_CONSOLESCREEN_H
 #define TASK_2_CONSOLESCREEN_H
 /**
- * Implements "Screen.h"
- * Displays game in the console
+ * Extends "Screen.h".
+ * Displays game state in the console
  * */
 #endif //TASK_2_CONSOLESCREEN_H

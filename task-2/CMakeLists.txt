@@ -4,15 +4,18 @@ project(22202_rozhkov_oop_cpp_task_2)
 set(CMAKE_CXX_STANDARD 14)
 
 add_executable(22202_rozhkov_oop_cpp_task_2
-        header/ConfigManager.h  source/
-        header/FileReader.h
-        header/InputManager.h
-        header/Input.h
-        header/Screen.h
-        header/Engine.h
-        header/Field.h
-        header/ConsoleInput.h
-        header/ConsoleScreen.h
+        header/ConfigManager.h  source/ConfigManager.cpp
+        header/LineParser.h     source/LineParser.cpp
+        header/Rule.h           source/Rule.cpp
+        header/FileReader.h     source/FileReader.cpp
+        header/FileWriter.h     source/FileWriter.cpp
+        header/InputManager.h   source/InputManager.cpp
+        header/Input.h          source/Input.cpp
+        header/Screen.h         source/Screen.cpp
+        header/Engine.h         source/Engine.cpp
+        header/Field.h          source/Field.cpp
+        header/ConsoleInput.h   source/ConsoleInput.cpp
+        header/ConsoleScreen.h  source/ConsoleScreen.cpp
 )
 
 add_subdirectory(Google_tests)
