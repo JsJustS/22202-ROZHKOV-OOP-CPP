@@ -8,4 +8,5 @@
  * Interface for displaying current state
  * of the game.
  * */
+ // todo: screen
 #endif //TASK_2_SCREEN_H

@@ -7,4 +7,5 @@
 /**
  * Main class for the game
  * */
+ //todo: Main engine
 #endif //TASK_2_ENGINE_H

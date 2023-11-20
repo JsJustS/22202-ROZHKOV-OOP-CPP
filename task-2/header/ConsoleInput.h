@@ -7,4 +7,5 @@
  * Extends "Input.h".
  * Processes Console Commands as input
  * */
+ //todo: ConsoleInput
 #endif //TASK_2_CONSOLEINPUT_H

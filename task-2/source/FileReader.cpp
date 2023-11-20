@@ -32,5 +32,5 @@ bool FileReader::isOpen() {
 }
 
 bool FileReader::isOk() {
-    return !f.bad() && !f.fail();
+    return !f.bad();
 }

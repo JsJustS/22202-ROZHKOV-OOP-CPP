@@ -8,4 +8,5 @@
  * Extends "Screen.h".
  * Displays game state in the console
  * */
+ //todo: ConsoleScreen
 #endif //TASK_2_CONSOLESCREEN_H

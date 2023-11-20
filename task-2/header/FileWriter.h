@@ -7,5 +7,5 @@
 /**
  * Dumps game states to the specified file
  * */
-
+// todo: Dump current field and Config
 #endif //INC_22202_ROZHKOV_OOP_CPP_FILEWRITER_H

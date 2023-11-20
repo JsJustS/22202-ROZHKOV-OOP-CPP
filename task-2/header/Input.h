@@ -9,4 +9,5 @@
  * Organizes bridge between user inputs and
  * InputManager.
  * */
+ //todo: Input
 #endif //TASK_2_INPUT_H

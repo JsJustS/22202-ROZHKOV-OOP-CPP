@@ -51,4 +51,5 @@ TEST(FileReaderTests, ConfigManagerBehaviour) {
     config.load("C:\\Users\\Just\\CLionProjects\\22202-ROZHKOV-OOP-CPP\\task-2\\games\\test.lif", field);
 
     std::cout << config.toString() << std::endl;
+    std::cout << field.toString() << std::endl;
 }

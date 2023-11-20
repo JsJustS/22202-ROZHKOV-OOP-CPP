@@ -6,13 +6,23 @@
 #define TASK_2_FIELD_H
 
 #include <vector>
+#include <stdexcept>
 
 /**
- * Processes current game state
+ * Contains current game state
  * */
  class Field {
+     // todo: Field logic
+     // Field should not calculate anything, it's just a container for current game state
+     int width;
+     int height;
+     bool* cells;
  public:
-     void load(std::vector<std::pair<int, int>> coords);
+     Field();
+     ~Field();
+     void init(int w, int h, std::vector<std::pair<int, int>> coords);
      void setCell(int x, int y, bool isAlive);
+     bool getCell(int x, int y);
+     std::string toString();
  };
 #endif //TASK_2_FIELD_H

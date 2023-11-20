@@ -17,7 +17,7 @@ ConfigManager::ConfigManager(std::ostream& out) {
     this->logger = &out;
 }
 
-void ConfigManager::load(const std::string& universe, Field field) {
+void ConfigManager::load(const std::string& universe, Field& field) {
     FileReader reader(universe);
     reader.open();
 
@@ -62,7 +62,7 @@ void ConfigManager::load(const std::string& universe, Field field) {
 
     // if file was not broken, load field
     if (reader.isOk()) {
-        field.load(coords);
+        field.init(this->fieldWidth, this->fieldHeight, coords);
     }
 
     reader.close();

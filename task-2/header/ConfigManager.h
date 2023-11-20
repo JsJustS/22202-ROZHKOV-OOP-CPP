@@ -40,7 +40,7 @@ public:
     ConfigManager(std::ostream& out);
 
     // loads settings from file with the specified name
-    void load(const std::string& universe, Field field);
+    void load(const std::string& universe, Field& field);
 
     // dumps config as a string
     std::string toString() const;

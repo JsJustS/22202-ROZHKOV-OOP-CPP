@@ -7,4 +7,5 @@
 /**
  * Manages user input.
  * */
+ //todo: Input manager
 #endif //TASK_2_INPUTMANAGER_H
