@@ -16,6 +16,7 @@ add_executable(22202_rozhkov_oop_cpp_task_2
         header/Field.h          source/Field.cpp
         header/ConsoleInput.h   source/ConsoleInput.cpp
         header/ConsoleScreen.h  source/ConsoleScreen.cpp
+        main.cpp
 )
 
 add_subdirectory(Google_tests)

@@ -7,5 +7,27 @@
 /**
  * Main class for the game
  * */
- //todo: Main engine
+#include <iostream>
+
+#include "Field.h"
+#include "ConfigManager.h"
+
+//todo: Main engine
+class Engine {
+private:
+    Engine(const Field& fld, ConfigManager cfg);
+
+    static Engine* instance;
+
+    Field field;
+    ConfigManager config;
+public:
+    Engine() = delete;
+    Engine(Engine const&) = delete;
+    void operator=(Engine const&) = delete;
+
+    static Engine* getInstance(std::ostream& out = std::cout);
+
+    void tickField();
+};
 #endif //TASK_2_ENGINE_H
