@@ -71,11 +71,10 @@ TEST(FileReaderTests, EngineTest){
 
     Engine::draw(); // ask Screen to draw current Field on itself
 
-    Engine::tick(); // move field to fieldOld, calculate new Field according to rules
-    Engine::draw();
-
-    Engine::tick();
-    Engine::draw();
+    for (int i = 0; i < 10; i++) {
+        Engine::tick();
+        Engine::draw();
+    }
 
     Engine::stop();
 }

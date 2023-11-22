@@ -86,16 +86,18 @@ void Engine::tick() {
         }
     }
 
-    Engine::log(instance->config->toString());
-
     for (int y = 0; y < height; ++y) {
         for (int x = 0; x < width; ++x) {
             char count = instance->fieldOld->countAliveNeighbours(x, y);
-            //std::cout << x << "|" << y << "|" << (int)count << std::endl;
             bool shouldBirth = instance->config->canBirth(count);
             bool shouldSurvive = instance->config->canSurvive(count);
 
-            instance->field->setCell(x, y, shouldBirth || shouldSurvive);
+            if (instance->fieldOld->getCell(x, y)) {
+                instance->field->setCell(x, y, shouldSurvive);
+            } else {
+                instance->field->setCell(x, y, shouldBirth);
+            }
+
         }
     }
 }
