@@ -4,15 +4,14 @@
 #include <iostream>
 #include "../header/Field.h"
 
-void Field::init(int w, int h, std::vector<std::pair<int, int>> coords) {
-    if (this->cells != nullptr) {throw std::runtime_error("Trying to reinitialize");}
-    this->width = w;
-    this->height = h;
-    this->cells = new bool[w*h];
+void Field::load(std::vector<std::pair<int, int>> coords) {
+    if (this->cells == nullptr) {
+        this->cells = new bool[this->width * this->height];
 
-    for (int i = 0; i < w; i++) {
-        for (int j = 0; j < h; j++) {
-            setCell(i, j, false);
+        for (int i = 0; i < this->width; i++) {
+            for (int j = 0; j < this->height; j++) {
+                setCell(i, j, false);
+            }
         }
     }
 
@@ -23,17 +22,30 @@ void Field::init(int w, int h, std::vector<std::pair<int, int>> coords) {
 
 void Field::setCell(int x, int y, bool isAlive) {
     int cellX = x % this->width;
+    if (cellX < 0) {
+        cellX += this->width;
+    }
     int cellY = y % this->height;
+    if (cellY < 0) {
+        cellY += this->height;
+    }
     this->cells[cellY*this->height + cellX] = isAlive;
 }
 
 bool Field::getCell(int x, int y) {
     int cellX = x % this->width;
+    if (cellX < 0) {
+        cellX += this->width;
+    }
     int cellY = y % this->height;
+    if (cellY < 0) {
+        cellY += this->height;
+    }
     return this->cells[cellY*this->height + cellX];
 }
 
 Field::~Field() {
+    std::cout << "Deleting " + toString() << std::endl;
     delete [] this->cells;
 }
 
@@ -41,6 +53,18 @@ Field::Field() {
     this->width = 0;
     this->height = 0;
     this->cells = nullptr;
+}
+
+Field::Field(int w, int h) {
+    this->width = w;
+    this->height = h;
+    this->cells = new bool[w*h];
+
+    for (int i = 0; i < w; i++) {
+        for (int j = 0; j < h; j++) {
+            setCell(i, j, false);
+        }
+    }
 }
 
 std::string Field::toString() {
@@ -56,4 +80,16 @@ std::string Field::toString() {
     }
 
     return string += "}}";
+}
+
+char Field::countAliveNeighbours(int x, int y) {
+    char count = 0;
+    for (char dx = -1; dx < 2; dx++) {
+        for (char dy = -1; dy < 2; dy++) {
+            if ((dx != 0 || dy != 0) && this->getCell(x + dx, y + dy)) {
+                count++;
+            }
+        }
+    }
+    return count;
 }

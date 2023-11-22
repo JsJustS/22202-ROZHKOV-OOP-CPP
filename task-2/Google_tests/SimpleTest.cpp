@@ -6,6 +6,7 @@
 #include "../header/Rule.h"
 #include "../header/LineParser.h"
 #include "../header/ConfigManager.h"
+#include "../header/Engine.h"
 
 TEST(FileReaderTests, RuleBehavior) {
     Rule rule{};
@@ -44,12 +45,37 @@ TEST(FileReaderTests, LineParserBehaviour) {
 }
 
 TEST(FileReaderTests, ConfigManagerBehaviour) {
-    ConfigManager config{std::cout};
+    ConfigManager config{};
+    //config.setLogger(std::cout);
 
-    Field field{};
+    std::vector<std::pair<int, int>> coords = config.load(
+            "C:\\Projects\\NSU\\OOP\\22202-rozhkov-oop-cpp\\task-2\\games\\test.lif"
+    );
 
-    config.load("C:\\Users\\Just\\CLionProjects\\22202-ROZHKOV-OOP-CPP\\task-2\\games\\test.lif", field);
+    Field field(config.getFieldWidth(), config.getFieldHeight());
+    Field fieldOld(config.getFieldWidth(), config.getFieldHeight());
+
+    field.load(coords);
 
     std::cout << config.toString() << std::endl;
     std::cout << field.toString() << std::endl;
+    std::cout << fieldOld.toString() << std::endl;
+
+    std::cout << (int)field.countAliveNeighbours(2, 3) << std::endl;
+}
+
+TEST(FileReaderTests, EngineTest){
+    Engine::init();
+    Engine::setLogger(std::cout);
+    Engine::loadConfig("C:\\Projects\\NSU\\OOP\\22202-rozhkov-oop-cpp\\task-2\\games\\test.lif");
+
+    Engine::draw(); // ask Screen to draw current Field on itself
+
+    Engine::tick(); // move field to fieldOld, calculate new Field according to rules
+    Engine::draw();
+
+    Engine::tick();
+    Engine::draw();
+
+    Engine::stop();
 }

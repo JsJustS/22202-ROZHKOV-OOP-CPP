@@ -15,19 +15,30 @@
 //todo: Main engine
 class Engine {
 private:
-    Engine(const Field& fld, ConfigManager cfg);
+    Engine(const Field& fld, const Field& fld1, ConfigManager cfg);
 
     static Engine* instance;
 
-    Field field;
-    ConfigManager config;
+    Field* field;
+    Field* fieldOld;
+    ConfigManager* config;
+
+    std::ostream* logger;
+
+    Engine();
 public:
-    Engine() = delete;
     Engine(Engine const&) = delete;
     void operator=(Engine const&) = delete;
 
-    static Engine* getInstance(std::ostream& out = std::cout);
+    static void stop();
+    static void init();
 
-    void tickField();
+    static void setLogger(std::ostream& out);
+    static void log(const std::string &message);
+
+    static void loadConfig(const std::string& filename);
+
+    static void draw();
+    static void tick();
 };
 #endif //TASK_2_ENGINE_H

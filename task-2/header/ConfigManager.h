@@ -24,10 +24,8 @@ private:
     std::string universeName;
     int fieldWidth;
     int fieldHeight;
-    Rule birthRule;
-    Rule survivalRule;
-
-    std::ostream* logger;
+    Rule* birthRule;
+    Rule* survivalRule;
 
     void checkForIntegrity();
     void parseMeta(const std::vector<std::string> & data, int lineIndex);
@@ -37,10 +35,11 @@ private:
     void processSize(const std::vector<std::string> & data, int lineIndex);
 public:
 
-    ConfigManager(std::ostream& out);
+    ConfigManager();
+    ~ConfigManager();
 
     // loads settings from file with the specified name
-    void load(const std::string& universe, Field& field);
+    std::vector<std::pair<int, int>> load(const std::string& universe);
 
     // dumps config as a string
     std::string toString() const;
@@ -52,7 +51,7 @@ public:
     std::string getUniverseName() const;
     int getFieldWidth() const;
     int getFieldHeight() const;
-    Rule getBirthRule() const;
-    Rule getSurvivalRule() const;
+    bool canBirth(char count) const;
+    bool canSurvive(char count) const;
 };
 #endif //TASK_2_CONFIG_H

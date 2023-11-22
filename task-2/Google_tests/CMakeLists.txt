@@ -10,6 +10,6 @@ include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 add_executable(
         Google_Tests_run
         SimpleTest.cpp ../source/Rule.cpp ../source/LineParser.cpp ../source/ConfigManager.cpp ../source/FileReader.cpp
-        ../source/Field.cpp
+        ../source/Field.cpp ../source/Engine.cpp
 )
 target_link_libraries(Google_Tests_run gtest gtest_main)

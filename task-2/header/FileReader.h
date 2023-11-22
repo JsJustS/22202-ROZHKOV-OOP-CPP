@@ -21,6 +21,8 @@ public:
     explicit FileReader(std::string fname): filename(std::move(fname)) {
     }
 
+    ~FileReader();
+
     void open();
 
     std::string next();
