@@ -34,7 +34,3 @@ bool FileReader::isOpen() {
 bool FileReader::isOk() {
     return !f.bad();
 }
-
-FileReader::~FileReader() {
-    std::cout << "Deleting FileReader{}" << std::endl;
-}

@@ -15,8 +15,6 @@
 //todo: Main engine
 class Engine {
 private:
-    Engine(const Field& fld, const Field& fld1, ConfigManager cfg);
-
     static Engine* instance;
 
     Field* field;

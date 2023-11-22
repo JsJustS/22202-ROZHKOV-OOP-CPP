@@ -19,17 +19,10 @@ void Engine::init() {;
 }
 
 void Engine::stop() {
-    std::cout << "deleting logger" << std::endl;
-    //delete instance->logger;
-    std::cout << "deleted. deleting config" << std::endl;
     delete instance->config;
-    std::cout << "deleted. deleting field" << std::endl;
     delete instance->field;
-    std::cout << "deleted. deleting fieldOld" << std::endl;
     delete instance->fieldOld;
-    std::cout << "deleted. deleting instance" << std::endl;
     delete instance;
-    std::cout << "deleted." << std::endl;
     instance = nullptr;
 }
 
@@ -67,7 +60,8 @@ void Engine::draw() {
     for (int y = 0; y < height; ++y) {
         std::string line{};
         for (int x = 0; x < width; ++x) {
-            line += (instance->field->getCell(x, y)) ? "⬜" : "⬛";
+            //line += (instance->field->getCell(x, y)) ? "⬜" : "⬛";
+            line += (instance->field->getCell(x, y)) ? "# " : ". ";
         }
         Engine::log(line);
     }
