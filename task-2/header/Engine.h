@@ -11,6 +11,8 @@
 
 #include "Field.h"
 #include "ConfigManager.h"
+#include "Screen.h"
+#include "ConsoleScreen.h"
 
 //todo: Main engine
 class Engine {
@@ -20,6 +22,7 @@ private:
     Field* field;
     Field* fieldOld;
     ConfigManager* config;
+    Screen* screen;
 
     std::ostream* logger;
 

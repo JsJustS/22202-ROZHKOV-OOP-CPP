@@ -209,7 +209,6 @@ void ConfigManager::parseMeta(const std::vector<std::string> &data, int lineInde
 }
 
 ConfigManager::~ConfigManager() {
-    std::cout << "Deleting " + toString() << std::endl;
     delete this->birthRule;
     delete this->survivalRule;
 }

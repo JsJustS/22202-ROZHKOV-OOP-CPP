@@ -29,7 +29,7 @@ void Field::setCell(int x, int y, bool isAlive) {
     if (cellY < 0) {
         cellY += this->height;
     }
-    this->cells[cellY*this->height + cellX] = isAlive;
+    this->cells[cellY*this->width + cellX] = isAlive;
 }
 
 bool Field::getCell(int x, int y) {
@@ -41,11 +41,10 @@ bool Field::getCell(int x, int y) {
     if (cellY < 0) {
         cellY += this->height;
     }
-    return this->cells[cellY*this->height + cellX];
+    return this->cells[cellY*this->width + cellX];
 }
 
 Field::~Field() {
-    std::cout << "Deleting " + toString() << std::endl;
     delete [] this->cells;
 }
 

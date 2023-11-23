@@ -7,6 +7,7 @@
 #include "../header/LineParser.h"
 #include "../header/ConfigManager.h"
 #include "../header/Engine.h"
+#include "../header/ConsoleScreen.h"
 
 TEST(FileReaderTests, RuleBehavior) {
     Rule rule{};
@@ -67,7 +68,7 @@ TEST(FileReaderTests, ConfigManagerBehaviour) {
 TEST(FileReaderTests, EngineTest){
     Engine::init();
     Engine::setLogger(std::cout);
-    Engine::loadConfig("C:\\Projects\\NSU\\OOP\\22202-rozhkov-oop-cpp\\task-2\\games\\test.lif");
+    Engine::loadConfig("C:\\Users\\Just\\CLionProjects\\22202-ROZHKOV-OOP-CPP\\task-2\\games\\test.lif");
 
     Engine::draw(); // ask Screen to draw current Field on itself
 
@@ -77,4 +78,19 @@ TEST(FileReaderTests, EngineTest){
     }
 
     Engine::stop();
+}
+
+TEST(FileReaderTests, ScreenTest){
+    ConsoleScreen screen{};
+    screen.setWidth(23).setHeight(13);
+    screen.clear();
+    int green = ConsoleScreen::rgb2Int(0, 255, 0);
+    screen.addText(1, 1, "i am Sam i am so cool ha ha ha! yaay i am great",
+                   ConsoleScreen::rgb2Int(255, 0, 0));
+    screen.addPixel(1, 2, ConsoleScreen::rgb2Int(0, 0, 255));
+    screen.addLine(0, 0, 22, 0, green)
+            .addLine(22, 0, 22, 12, green)
+            .addLine(22, 12, 0, 12, green)
+            .addLine(0, 12, 0, 0, green);
+    screen.render();
 }

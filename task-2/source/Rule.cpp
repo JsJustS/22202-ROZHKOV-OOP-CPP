@@ -10,7 +10,6 @@ Rule::Rule() {
 }
 
 Rule::~Rule() {
-    std::cout << "Deleting " + toString() << std::endl;
     delete [] this->set;
 }
 

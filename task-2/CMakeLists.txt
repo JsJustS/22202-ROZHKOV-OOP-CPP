@@ -10,8 +10,8 @@ add_executable(22202_rozhkov_oop_cpp_task_2
         header/FileReader.h     source/FileReader.cpp
         header/FileWriter.h     source/FileWriter.cpp
         header/InputManager.h   source/InputManager.cpp
-        header/Input.h          source/Input.cpp
-        header/Screen.h         source/Screen.cpp
+        header/Input.h
+        header/Screen.h
         header/Engine.h         source/Engine.cpp
         header/Field.h          source/Field.cpp
         header/ConsoleInput.h   source/ConsoleInput.cpp
