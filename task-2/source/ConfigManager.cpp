@@ -212,3 +212,17 @@ ConfigManager::~ConfigManager() {
     delete this->birthRule;
     delete this->survivalRule;
 }
+
+std::string ConfigManager::getRulesAsString() {
+    std::string stringBirth = "B";
+    std::string stringSurvive = "S";
+    for (char i = 0; i < 9 ; ++i) {
+        if (this->birthRule->isApplicable(i)) {
+            stringBirth += std::to_string((int)i);
+        }
+        if (this->survivalRule->isApplicable(i)) {
+            stringSurvive += std::to_string((int)i);
+        }
+    }
+    return stringBirth + "/" + stringSurvive;
+}

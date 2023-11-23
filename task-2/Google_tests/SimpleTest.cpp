@@ -68,13 +68,22 @@ TEST(FileReaderTests, ConfigManagerBehaviour) {
 TEST(FileReaderTests, EngineTest){
     Engine::init();
     Engine::setLogger(std::cout);
-    Engine::loadConfig("C:\\Users\\Just\\CLionProjects\\22202-ROZHKOV-OOP-CPP\\task-2\\games\\test.lif");
+    //"C:\\Users\\Just\\CLionProjects\\22202-ROZHKOV-OOP-CPP\\task-2\\games\\test.lif"
+    Engine::loadConfig();
 
-    Engine::draw(); // ask Screen to draw current Field on itself
+    int barrierColor = ConsoleScreen::rgb2Int(13, 77, 0);
+    int textColor = ConsoleScreen::rgb2Int(0, 255, 255);
+    int aliveCellColor = ConsoleScreen::rgb2Int(255, 255, 255);
+    int deadCellColor = ConsoleScreen::rgb2Int(0, 0, 0);
 
-    for (int i = 0; i < 10; i++) {
-        Engine::tick();
-        Engine::draw();
+    int generation = 0;
+    while (generation++ <= 40) {
+        Engine::clearScreen();
+        Engine::drawGUI(textColor, barrierColor, generation);
+        Engine::drawField(aliveCellColor, deadCellColor, barrierColor);
+        Engine::drawScreen();
+
+        Engine::tickField();
     }
 
     Engine::stop();

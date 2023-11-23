@@ -53,5 +53,7 @@ public:
     int getFieldHeight() const;
     bool canBirth(char count) const;
     bool canSurvive(char count) const;
+
+    std::string getRulesAsString();
 };
 #endif //TASK_2_CONFIG_H

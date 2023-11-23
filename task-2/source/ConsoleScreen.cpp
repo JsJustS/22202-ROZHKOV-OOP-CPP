@@ -40,6 +40,7 @@ Screen& ConsoleScreen::clear() {
             this->pixels[i*this->width + j] = " ";
         }
     }
+    system("cls");
     return *this;
 }
 

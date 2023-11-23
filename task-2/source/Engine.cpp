@@ -1,23 +1,31 @@
 //
 // Created by Just on 18.11.2023.
 //
-#include <utility>
-
 #include "../header/Engine.h"
 
 Engine* Engine::instance = nullptr;
 
 Engine::Engine() {
+    this->inputManager = nullptr;
     this->field = nullptr;
     this->fieldOld = nullptr;
     this->config = nullptr;
     this->logger = nullptr;
     this->screen = nullptr;
+
+    this->exitcode = false;
+    this->needsScreenUpdate = false;
+
+    this->generation = 0;
 }
 
 void Engine::init() {;
     instance = new Engine();
     instance->screen = new ConsoleScreen(30, 5);
+    instance->inputManager = new InputManager();
+
+    Input* inputType = new ConsoleInput();
+    instance->inputManager->setInputType((*inputType));
 }
 
 void Engine::stop() {
@@ -25,13 +33,23 @@ void Engine::stop() {
     delete instance->field;
     delete instance->fieldOld;
     delete instance->screen;
+    delete instance->inputManager;
     delete instance;
     instance = nullptr;
 }
 
 void Engine::loadConfig(const std::string &filename) {
     instance->config = new ConfigManager();
-    std::vector<std::pair<int, int>> coords = instance->config->load(filename);
+    std::vector<std::pair<int, int>> coords;
+
+    if (filename.empty()) {
+        std::string randFile = Engine::getRandomConfig();
+        Engine::log("No config provided, using \"" + randFile + "\" from \"\\examples\".");
+        coords = instance->config->load(Engine::getGameDir() + "\\examples\\" + randFile);
+    } else {
+        coords = instance->config->load(filename);
+    }
+
 
     int fw = instance->config->getFieldWidth();
     int fh = instance->config->getFieldHeight();
@@ -44,6 +62,39 @@ void Engine::loadConfig(const std::string &filename) {
     instance->screen->setWidth(2*fw + 3).setHeight(fh + 6);
 }
 
+std::string Engine::getRandomConfig() {
+    std::vector<std::string> filenames{};
+
+    WIN32_FIND_DATA ffd;
+    TCHAR szDir[MAX_PATH];
+    StringCchCopy(szDir, MAX_PATH, Engine::getGameDir().data());
+    StringCchCat(szDir, MAX_PATH, TEXT("\\examples\\*"));
+    HANDLE hFind = FindFirstFile(szDir, &ffd);
+
+    if (INVALID_HANDLE_VALUE == hFind) {
+        return {};
+    }
+
+    do {
+        std::string filename = std::string(ffd.cFileName);
+        if (filename != "." && filename != "..") {
+            filenames.push_back(filename);
+        }
+    }
+    while (FindNextFile(hFind, &ffd) != 0);
+
+    FindClose(hFind);
+
+    const auto p1 = std::chrono::system_clock::now();
+    long long seconds = std::chrono::duration_cast<std::chrono::seconds>(p1.time_since_epoch()).count();
+
+    return filenames[seconds % filenames.size()];
+}
+
+void Engine::dump(const std::string &filename) {
+    // todo: FileWriter
+}
+
 void Engine::setLogger(std::ostream &out) {
     delete instance->logger;
     instance->logger = &out;
@@ -54,49 +105,74 @@ void Engine::log(const std::string &message) {
     (*instance->logger) << message << std::endl;
 }
 
-void Engine::draw() {
+void Engine::clearScreen() {
     instance->screen->clear();
+}
 
-    int white = ConsoleScreen::rgb2Int(255, 255, 255);
-    int black = ConsoleScreen::rgb2Int(0, 0, 0);
-    int barrier = ConsoleScreen::rgb2Int(13, 77, 0);
-    int aqua = ConsoleScreen::rgb2Int(0, 255, 255);
-
-    int width = instance->config->getFieldWidth();
-    int height = instance->config->getFieldHeight();
-
+void Engine::drawGUI(int textColor, int barrierColor) {
     int textX = (instance->screen->getWidth() - instance->config->getUniverseName().length()) / 2;
     if (textX < 0) {
         textX = 0;
     }
     instance->screen->addText(textX, 1,
                               instance->config->getUniverseName(),
-                              aqua);
+                              textColor);
     instance->screen->addLine(0, 0,
                               instance->screen->getWidth() - 1, 0,
-                              barrier);
+                              barrierColor);
+
+    std::string genText = "GEN: " + std::to_string(instance->generation);
+    textX = (instance->screen->getWidth() - genText.length()) / 2;
+    if (textX < 0) {
+        textX = 0;
+    }
+    instance->screen->addText(textX, instance->screen->getHeight()-2,
+                              genText,
+                              textColor);
+
+    std::string ruleText = instance->config->getRulesAsString();
+    textX = (instance->screen->getWidth() - ruleText.length()) / 2;
+    if (textX < 0) {
+        textX = 0;
+    }
+    instance->screen->addText(textX, instance->screen->getHeight()-1,
+                              ruleText,
+                              textColor);
+}
+
+void Engine::drawField(int aliveColor, int deadColor, int barrierColor) {
+    int width = instance->config->getFieldWidth();
+    int height = instance->config->getFieldHeight();
+
     instance->screen->addLine(0, 2,
                               instance->screen->getWidth() - 1, 2,
-                              barrier);
+                              barrierColor);
     instance->screen->addLine(instance->screen->getWidth() - 1, 2,
                               instance->screen->getWidth() - 1, instance->screen->getHeight() - 3,
-                              barrier);
+                              barrierColor);
     instance->screen->addLine(instance->screen->getWidth() - 1, instance->screen->getHeight() - 3,
                               0, instance->screen->getHeight() - 3,
-                              barrier);
+                              barrierColor);
     instance->screen->addLine(0, instance->screen->getHeight() - 3,
                               0, 2,
-                              barrier);
+                              barrierColor);
 
     for (int y = 0; y < height; ++y) {
         for (int x = 0; x < width; ++x) {
-            instance->screen->addPixel(2*x+2, y+3,(instance->field->getCell(x, y)) ? white : black);
+            instance->screen->addPixel(2*x+2, y+3,(instance->field->getCell(x, y)) ? aliveColor : deadColor);
         }
     }
+}
+
+void Engine::drawText(int x, int y, const std::string& text, int textColor) {
+    instance->screen->addText(x, y, text, textColor);
+}
+
+void Engine::drawScreen() {
     instance->screen->render();
 }
 
-void Engine::tick() {
+void Engine::tickField() {
     int width = instance->config->getFieldWidth();
     int height = instance->config->getFieldHeight();
 
@@ -123,4 +199,49 @@ void Engine::tick() {
 
         }
     }
+
+    instance->generation++;
+}
+
+std::string Engine::getGameDir() {
+    // "..\\..\\games"  for google_tests
+    // "..\\games"  for main
+    return "..\\games";
+}
+
+void Engine::startOnline() {
+    Engine::log("Press ENTER to start!");
+
+    int barrierColor = ConsoleScreen::rgb2Int(13, 77, 0);
+    int textColor = ConsoleScreen::rgb2Int(0, 255, 255);
+    int aliveCellColor = ConsoleScreen::rgb2Int(255, 255, 255);
+    int deadCellColor = ConsoleScreen::rgb2Int(0, 0, 0);
+
+    while (!instance->exitcode) {
+        if (Engine::shouldScreenUpdate()) {
+            Engine::clearScreen();
+            Engine::drawGUI(textColor, barrierColor);
+            Engine::drawField(aliveCellColor, deadCellColor, barrierColor);
+            Engine::drawScreen();
+            Engine::setScreenUpdate(false);
+        }
+
+        Engine::tickUserInput();
+    }
+}
+
+void Engine::tickUserInput() {
+    instance->inputManager->processActions();
+}
+
+void Engine::setExit(bool code) {
+    instance->exitcode = code;
+}
+
+bool Engine::shouldScreenUpdate() {
+    return instance->needsScreenUpdate;
+}
+
+void Engine::setScreenUpdate(bool bl) {
+    instance->needsScreenUpdate = bl;
 }
