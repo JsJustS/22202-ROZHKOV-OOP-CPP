@@ -1,7 +1,6 @@
 //
 // Created by Just on 18.11.2023.
 //
-#include <iostream>
 #include "../header/Field.h"
 
 void Field::load(std::vector<std::pair<int, int>> coords) {

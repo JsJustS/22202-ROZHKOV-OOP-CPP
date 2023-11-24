@@ -31,8 +31,9 @@ ArgHandler::ArgHandler(int argc, char **argv) {
     this->outputFilename = (argFOut) ? std::string(argFOut) : std::string{};
     this->iterations = (argIt) ? std::stoi(std::string(argIt)) : -1;
 
-    if (argc > 1 && argv[1][0] != '-') {
-        this->inputFilename = std::string(argv[1]);
+
+    if (argc > 1 && argv[argc-1][0] != '-') {
+        this->inputFilename = std::string(argv[argc-1]);
     }
 }
 

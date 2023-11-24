@@ -1,7 +1,6 @@
 //
 // Created by Just on 19.11.2023.
 //
-#include <iostream>
 #include "../header/Rule.h"
 
 Rule::Rule() {

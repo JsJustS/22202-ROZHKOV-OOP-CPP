@@ -5,7 +5,6 @@
 #ifndef TASK_2_FILEREADER_H
 #define TASK_2_FILEREADER_H
 
-#include <utility>
 #include <string>
 #include <iostream>
 #include <fstream>

@@ -3,8 +3,6 @@
 //
 #include "header/Engine.h"
 #include "header/ArgHandler.h"
-#include <chrono>
-#include <thread>
 
 int main(int argc, char* argv[]) {
     ArgHandler handler(argc, argv);
@@ -13,7 +11,14 @@ int main(int argc, char* argv[]) {
     Engine::setLogger(std::cout);
 
     if (handler.hasInputFilename()) {
-        Engine::loadConfig(handler.getInputFilename());
+        std::string conf = handler.getInputFilename();
+        std::string suffix = conf.substr(conf.rfind('.'), conf.length() - conf.rfind('.'));
+        if (suffix == ".lif" || suffix == ".life") {
+            Engine::loadConfig(conf);
+        } else {
+            Engine::log(R"(Input File has wrong format! Use only ".lif" or ".life" formats.)");
+            Engine::loadConfig();
+        }
     } else {
         Engine::loadConfig();
     }

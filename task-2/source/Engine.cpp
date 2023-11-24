@@ -127,7 +127,7 @@ bool Engine::dump(const std::string &filenamelong) {
 
     for (int y = 0; y < height; ++y) {
         for (int x = 0; x < width; ++x) {
-            if (instance->fieldOld->getCell(x, y)) {
+            if (instance->field->getCell(x, y)) {
                 writer.writeLine(std::to_string(x) + " " + std::to_string(y));
             }
         }
