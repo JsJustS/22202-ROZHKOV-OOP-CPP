@@ -3,6 +3,9 @@
 //
 #include "../header/Engine.h"
 
+#define MIN_WINDOW_WIDTH 30
+#define MIN_WINDOW_HEIGHT 7
+
 Engine* Engine::instance = nullptr;
 
 Engine::Engine() {
@@ -59,7 +62,9 @@ void Engine::loadConfig(const std::string &filename) {
 
     instance->field->load(coords);
 
-    instance->screen->setWidth(2*fw + 3).setHeight(fh + 6);
+    int w = (MIN_WINDOW_WIDTH > 2*fw + 3) ? MIN_WINDOW_WIDTH : 2*fw + 3;
+    int h = (MIN_WINDOW_HEIGHT > fh + 6) ? MIN_WINDOW_HEIGHT : fh + 6;
+    instance->screen->setWidth(w).setHeight(h);
 }
 
 std::string Engine::getRandomConfig() {
@@ -91,8 +96,45 @@ std::string Engine::getRandomConfig() {
     return filenames[seconds % filenames.size()];
 }
 
-void Engine::dump(const std::string &filename) {
-    // todo: FileWriter
+bool Engine::dump(const std::string &filenamelong) {
+    std::string filename{};
+    if (filenamelong.rfind('.') != std::string::npos) {
+        int c = filenamelong.rfind('.');
+        std::string suffix = filenamelong.substr(c, filenamelong.length() - c);
+        filename = filenamelong.substr(0, c);
+        if (suffix != ".lif" && suffix != ".life") {
+            Engine::log("Wrong Format! using standard .lif");
+        }
+    } else {
+        filename = filenamelong;
+    }
+    FileWriter writer(filename + ".lif");
+
+    writer.open();
+    if (!writer.isOpen()) {
+        Engine::log("Could not open file.");
+        return false;
+    }
+
+    writer.writeLine("#Life " + instance->config->getFileFormat());
+    writer.writeLine("#N " + instance->config->getUniverseName());
+    writer.writeLine("#S " + std::to_string(instance->config->getFieldWidth()) + "/" +
+                        std::to_string(instance->config->getFieldHeight()));
+    writer.writeLine("#R " + instance->config->getRulesAsString());
+
+    int width = instance->config->getFieldWidth();
+    int height = instance->config->getFieldHeight();
+
+    for (int y = 0; y < height; ++y) {
+        for (int x = 0; x < width; ++x) {
+            if (instance->fieldOld->getCell(x, y)) {
+                writer.writeLine(std::to_string(x) + " " + std::to_string(y));
+            }
+        }
+    }
+
+    writer.close();
+    return true;
 }
 
 void Engine::setLogger(std::ostream &out) {
@@ -144,22 +186,27 @@ void Engine::drawField(int aliveColor, int deadColor, int barrierColor) {
     int width = instance->config->getFieldWidth();
     int height = instance->config->getFieldHeight();
 
-    instance->screen->addLine(0, 2,
-                              instance->screen->getWidth() - 1, 2,
+    int deltaX = (instance->screen->getWidth() - 2*width - 3) / 2;
+    if ((instance->screen->getWidth() - 2*width - 3 - deltaX) < deltaX) {
+        deltaX += 1;
+    }
+
+    instance->screen->addLine(deltaX, 2,
+                              deltaX + 2*width + 2, 2,
                               barrierColor);
-    instance->screen->addLine(instance->screen->getWidth() - 1, 2,
-                              instance->screen->getWidth() - 1, instance->screen->getHeight() - 3,
+    instance->screen->addLine(deltaX + 2*width + 2, 2,
+                              deltaX + 2*width + 2, instance->screen->getHeight() - 3,
                               barrierColor);
-    instance->screen->addLine(instance->screen->getWidth() - 1, instance->screen->getHeight() - 3,
-                              0, instance->screen->getHeight() - 3,
+    instance->screen->addLine(deltaX + 2*width + 2, instance->screen->getHeight() - 3,
+                              deltaX, instance->screen->getHeight() - 3,
                               barrierColor);
-    instance->screen->addLine(0, instance->screen->getHeight() - 3,
-                              0, 2,
+    instance->screen->addLine(deltaX, instance->screen->getHeight() - 3,
+                              deltaX, 2,
                               barrierColor);
 
     for (int y = 0; y < height; ++y) {
         for (int x = 0; x < width; ++x) {
-            instance->screen->addPixel(2*x+2, y+3,(instance->field->getCell(x, y)) ? aliveColor : deadColor);
+            instance->screen->addPixel(2*x+2+deltaX, y+3,(instance->field->getCell(x, y)) ? aliveColor : deadColor);
         }
     }
 }

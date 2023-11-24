@@ -10,7 +10,6 @@
  * */
 #include <string>
 
-// todo: screen
  class Screen {
  public:
      virtual ~Screen() = default;

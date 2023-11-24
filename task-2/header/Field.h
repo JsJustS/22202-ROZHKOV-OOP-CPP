@@ -31,18 +31,5 @@ public:
     char countAliveNeighbours(int x, int y);
 
     std::string toString();
-
-    friend void swap(Field& a, Field& b) {
-        int aW = a.width;
-        int aH = a.height;
-
-        a.width = b.width;
-        a.height = b.height;
-
-        b.width = aW;
-        b.height = aH;
-
-        std::swap(a.cells, b.cells);
-    }
 };
 #endif //TASK_2_FIELD_H

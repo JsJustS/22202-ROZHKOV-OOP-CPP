@@ -7,7 +7,6 @@
 #include <thread>
 
 int main(int argc, char* argv[]) {
-    // todo: dix this dumpster
     ArgHandler handler(argc, argv);
 
     Engine::init();

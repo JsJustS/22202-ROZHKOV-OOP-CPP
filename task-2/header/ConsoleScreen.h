@@ -31,7 +31,6 @@ Bright White    97  107
 #include "Screen.h"
 #include <iostream>
 
-//todo: ConsoleScreen
 class ConsoleScreen : public Screen {
 private:
     int width;

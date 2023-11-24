@@ -50,10 +50,9 @@ void InputManager::processActions() {
 }
 
 void InputManager::processDUMP(const std::string &data) {
-    //todo: check data for integrity
-
-    Engine::dump(data);
-    Engine::log("Universe dumped!");
+    if (Engine::dump(data)) {
+        Engine::log("Universe dumped!");
+    }
 }
 
 void InputManager::processTICK(const std::string &data) {

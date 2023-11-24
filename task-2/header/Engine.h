@@ -17,10 +17,10 @@
 #include "ConfigManager.h"
 #include "Screen.h"
 #include "ConsoleScreen.h"
-#include "InputManager.h"
 #include "ConsoleInput.h"
+#include "InputManager.h"
+#include "FileWriter.h"
 
-//todo: Main engine
 class Engine {
 private:
     static Engine* instance;
@@ -55,7 +55,7 @@ public:
 
     static void loadConfig(const std::string& filename = "");
     static std::string getRandomConfig();
-    static void dump(const std::string& filename);
+    static bool dump(const std::string& filename);
 
     static void clearScreen();
     static void drawGUI(int textColor, int barrierColor);

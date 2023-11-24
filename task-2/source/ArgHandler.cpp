@@ -4,17 +4,16 @@
 #include "../header/ArgHandler.h"
 
 ArgHandler::ArgHandler(int argc, char **argv) {
-    char* argFIn = nullptr;
     char* argFOut = nullptr;
     char* argIt = nullptr;
     static struct option long_options[] = {
             {"output",     required_argument, nullptr, 'o'},
             {"iterations", required_argument, nullptr, 'i'},
-            {nullptr, 0, nullptr, 0}
+            {nullptr, no_argument, nullptr, 0}
     };
     int option_index;
     int c;
-    while ((c = getopt_long(argc, argv, "io", long_options, &option_index)) != -1) {
+    while ((c = getopt_long(argc, argv, "i:o:", long_options, &option_index)) != -1) {
         switch (c) {
             case 'o': {
                 argFOut = optarg;
@@ -24,16 +23,17 @@ ArgHandler::ArgHandler(int argc, char **argv) {
                 argIt = optarg;
                 break;
             }
-            case '?': {
-                argFIn = optarg;
+            default: {
                 break;
             }
         }
     }
-
-    this->inputFilename = (argFIn) ? std::string(argFIn) : std::string{};
     this->outputFilename = (argFOut) ? std::string(argFOut) : std::string{};
     this->iterations = (argIt) ? std::stoi(std::string(argIt)) : -1;
+
+    if (argc > 1 && argv[1][0] != '-') {
+        this->inputFilename = std::string(argv[1]);
+    }
 }
 
 bool ArgHandler::hasInputFilename() const {
