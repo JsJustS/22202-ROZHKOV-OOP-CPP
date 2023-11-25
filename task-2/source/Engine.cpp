@@ -223,14 +223,7 @@ void Engine::tickField() {
     int width = instance->config->getFieldWidth();
     int height = instance->config->getFieldHeight();
 
-    for (int y = 0; y < height; ++y) {
-        for (int x = 0; x < width; ++x) {
-            instance->fieldOld->setCell(
-                    x, y,
-                    instance->field->getCell(x, y)
-            );
-        }
-    }
+    (*instance->fieldOld) = (*instance->field);
 
     for (int y = 0; y < height; ++y) {
         for (int x = 0; x < width; ++x) {
@@ -251,8 +244,6 @@ void Engine::tickField() {
 }
 
 std::string Engine::getGameDir() {
-    // "..\\..\\games"  for google_tests
-    // "..\\games"  for main
     return "games";
 }
 

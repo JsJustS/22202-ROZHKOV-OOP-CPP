@@ -31,5 +31,7 @@ public:
     char countAliveNeighbours(int x, int y);
 
     std::string toString();
+
+    Field& operator= (const Field& other);
 };
 #endif //TASK_2_FIELD_H

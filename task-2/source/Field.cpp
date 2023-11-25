@@ -91,3 +91,16 @@ char Field::countAliveNeighbours(int x, int y) {
     }
     return count;
 }
+
+Field &Field::operator= (const Field &other) {
+    if (this == &other) return *this;
+
+    if (this->width * this->height != other.width * other.height) {
+        this->width = other.width;
+        this->height = other.height;
+        delete [] this->cells;
+        this->cells = new bool[this->width*this->height];
+    }
+    std::copy(other.cells, other.cells + other.width*other.height, this->cells);
+    return *this;
+}
