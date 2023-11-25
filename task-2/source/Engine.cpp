@@ -253,7 +253,7 @@ void Engine::tickField() {
 std::string Engine::getGameDir() {
     // "..\\..\\games"  for google_tests
     // "..\\games"  for main
-    return "..\\games";
+    return "games";
 }
 
 void Engine::startOnline() {
