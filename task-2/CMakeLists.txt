@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD 14)
 add_executable(22202_rozhkov_oop_cpp_task_2
         header/Input.h
         header/Screen.h
+        header/Action.h
         header/ArgHandler.h     source/ArgHandler.cpp
         header/ConfigManager.h  source/ConfigManager.cpp
         header/LineParser.h     source/LineParser.cpp

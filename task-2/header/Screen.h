@@ -10,6 +10,9 @@
  * */
 #include <string>
 
+#define MIN_WINDOW_WIDTH 30
+#define MIN_WINDOW_HEIGHT 7
+
  class Screen {
  public:
      virtual ~Screen() = default;

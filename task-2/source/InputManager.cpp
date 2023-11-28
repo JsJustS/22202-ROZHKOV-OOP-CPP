@@ -2,7 +2,6 @@
 // Created by Just on 18.11.2023.
 //
 #include "../header/InputManager.h"
-#include "../header/Engine.h"
 
 InputManager::InputManager() {
     this->input = nullptr;
@@ -16,7 +15,17 @@ void InputManager::setInputType(Input &inp) {
     this->input = &inp;
 }
 
+void InputManager::tick() {
+    this->queue.clear();
+    this->input->getQueuedActions();
+}
+
+std::vector<Action> InputManager::getAllUserInputs() {
+    return std::vector<Action>();
+}
+
 void InputManager::processActions() {
+    // todo: Вытащить наружу.
     std::vector<std::pair<int, std::string>> queue = this->input->getQueuedActions();
 
     if (queue.empty()) {
@@ -24,6 +33,7 @@ void InputManager::processActions() {
         return;
     }
 
+    // todo: сделать средствами полиморфизма.
     for (std::pair<int, std::string> pair : queue) {
         ACTION action = static_cast<ACTION>(pair.first);
         std::string data = pair.second;

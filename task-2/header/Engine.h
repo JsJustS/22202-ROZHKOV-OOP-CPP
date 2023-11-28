@@ -24,8 +24,6 @@
 
 class Engine {
 private:
-    static Engine* instance;
-
     Field* field;
     Field* fieldOld;
     ConfigManager* config;
@@ -38,36 +36,36 @@ private:
     bool needsScreenUpdate;
 
     int generation;
-
-    Engine();
 public:
     static std::string getGameDir();
+
+    Engine();
 
     Engine(Engine const&) = delete;
     void operator=(Engine const&) = delete;
 
-    static void startOnline();
-    static void stop();
-    static void init();
+    void startOnline();
+    void stop();
+    void init();
 
-    static void setExit(bool code);
-    static void setLogger(std::ostream& out);
-    static void log(const std::string &message);
+    void setExit(bool code);
+    void setLogger(std::ostream& out);
+    void log(const std::string &message);
 
-    static void loadConfig(const std::string& filename = "");
+    void loadConfig(const std::string& filename = "");
     static std::string getRandomConfig();
-    static bool dump(const std::string& filename);
+    bool dump(const std::string& filename);
 
-    static void clearScreen();
-    static void drawGUI(int textColor, int barrierColor);
-    static void drawField(int aliveColor, int deadColor, int barrierColor);
-    static void drawText(int x, int y, const std::string& text, int textColor);
-    static void drawScreen();
+    void clearScreen();
+    void drawGUI(int textColor, int barrierColor);
+    void drawField(int aliveColor, int deadColor, int barrierColor);
+    void drawText(int x, int y, const std::string& text, int textColor);
+    void drawScreen();
 
-    static bool shouldScreenUpdate();
-    static void setScreenUpdate(bool bl);
+    bool shouldScreenUpdate() const;
+    void setScreenUpdate(bool bl);
 
-    static void tickField();
-    static void tickUserInput();
+    void tickField();
+    void tickUserInput();
 };
 #endif //TASK_2_ENGINE_H

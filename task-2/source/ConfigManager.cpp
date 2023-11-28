@@ -4,7 +4,6 @@
 #include "../header/ConfigManager.h"
 #include "../header/FileReader.h"
 #include "../header/LineParser.h"
-#include "../header/Engine.h"
 
 ConfigManager::ConfigManager() {
     this->fileFormat = "";
@@ -13,6 +12,8 @@ ConfigManager::ConfigManager() {
     this->fieldHeight = 0;
     this->birthRule = new Rule();
     this->survivalRule = new Rule();
+
+    this->logger = nullptr;
 }
 
 std::vector<std::pair<int, int>> ConfigManager::load(const std::string& universe) {
@@ -48,7 +49,7 @@ std::vector<std::pair<int, int>> ConfigManager::load(const std::string& universe
         }
 
         if (parsed.size() != 2 || !LineParser::isNumeric(parsed[0]) || !LineParser::isNumeric(parsed[1])) {
-            Engine::log("Junk Data on Line " + std::to_string(lineIndex));
+            this->log("Junk Data on Line " + std::to_string(lineIndex));
             continue;
         }
 
@@ -114,20 +115,20 @@ void ConfigManager::checkForIntegrity() {
         const auto p1 = std::chrono::system_clock::now();
         long long seconds = std::chrono::duration_cast<std::chrono::seconds>(p1.time_since_epoch()).count();
         this->universeName = "Uni" + std::to_string(seconds);
-        Engine::log("ConfigWarning: No Universe Name found, using generated \"" + this->universeName + "\".");
+        this->log("ConfigWarning: No Universe Name found, using generated \"" + this->universeName + "\".");
     }
     if (fieldWidth < 1 || fieldWidth > std::numeric_limits<int>::max() ||
         fieldHeight < 1 || fieldHeight > std::numeric_limits<int>::max()) {
         this->fieldWidth = 20;
         this->fieldHeight = 20;
-        Engine::log("ConfigWarning: Bad Field Size (or no Field Size) provided, using " +
+        this->log("ConfigWarning: Bad Field Size (or no Field Size) provided, using " +
         std::to_string(this->fieldWidth) + "/" + std::to_string(this->fieldHeight) + ".");
     }
     if (birthRule->isEmpty()) {
-        Engine::log("ConfigWarning: No rule for Birth provided.");
+        this->log("ConfigWarning: No rule for Birth provided.");
     }
     if (survivalRule->isEmpty()) {
-        Engine::log("ConfigWarning: No rule for Survival provided.");
+        this->log("ConfigWarning: No rule for Survival provided.");
     }
 }
 
@@ -138,7 +139,7 @@ void ConfigManager::processFileFormat(const std::vector<std::string> &data) {
 
 void ConfigManager::processUniverseName(const std::vector<std::string> &data, int lineIndex) {
     if (data.size() < 2) {
-        Engine::log("Junk Data on Line " + std::to_string(lineIndex));
+        this->log("Junk Data on Line " + std::to_string(lineIndex));
         return;
     }
 
@@ -150,7 +151,7 @@ void ConfigManager::processUniverseName(const std::vector<std::string> &data, in
 
 void ConfigManager::processRules(const std::vector<std::string> &data, int lineIndex) {
     if (data.size() != 2) {
-        Engine::log("Junk Data on Line " + std::to_string(lineIndex));
+        this->log("Junk Data on Line " + std::to_string(lineIndex));
         return;
     }
 
@@ -159,12 +160,12 @@ void ConfigManager::processRules(const std::vector<std::string> &data, int lineI
         bool isB = ruleset[0] == 'B';
         bool isS = ruleset[0] == 'S';
         if (!isB && !isS) {
-            Engine::log("Junk Data on Line " + std::to_string(lineIndex));
+            this->log("Junk Data on Line " + std::to_string(lineIndex));
             continue;
         }
         for (int i = 1; i < ruleset.length(); i++) {
             if (!LineParser::isNumeric(ruleset.substr(i, 1))) {
-                Engine::log("Junk Data on Line " + std::to_string(lineIndex));
+                this->log("Junk Data on Line " + std::to_string(lineIndex));
                 continue;
             }
             char cell = (char) std::stoi(ruleset.substr(i, 1));
@@ -179,13 +180,13 @@ void ConfigManager::processRules(const std::vector<std::string> &data, int lineI
 
 void ConfigManager::processSize(const std::vector<std::string> &data, int lineIndex) {
     if (data.size() != 2) {
-        Engine::log("Junk Data on Line " + std::to_string(lineIndex));
+        this->log("Junk Data on Line " + std::to_string(lineIndex));
         return;
     }
 
     std::vector<std::string> pair = LineParser::parse(data[1], '/');
     if (pair.size() != 2 || !LineParser::isNumeric(pair[0]) || !LineParser::isNumeric(pair[1])) {
-        Engine::log("Junk Data on Line " + std::to_string(lineIndex));
+        this->log("Junk Data on Line " + std::to_string(lineIndex));
         return;
     }
 
@@ -223,4 +224,13 @@ std::string ConfigManager::getRulesAsString() {
         }
     }
     return stringBirth + "/" + stringSurvive;
+}
+
+void ConfigManager::setLogger(std::ostream& out) {
+    this->logger = &out;
+}
+
+void ConfigManager::log(const std::string &message) {
+    if (this->logger == nullptr) return;
+    (*this->logger) << message << std::endl;
 }

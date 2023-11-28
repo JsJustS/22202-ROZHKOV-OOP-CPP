@@ -6,6 +6,7 @@
 #define TASK_2_INPUTMANAGER_H
 
 #include "Input.h"
+#include "Action.h"
 #include <vector>
 #include <string>
 
@@ -15,19 +16,14 @@
 class InputManager {
 private:
     Input* input;
-
-    enum ACTION {
-        DUMP,
-        TICK,
-        EXIT,
-        HELP
-    };
+    std::vector<Action> queue;
 public:
     InputManager();
     ~InputManager();
 
     void setInputType(Input& inp);
-    void processActions();
+    std::vector<Action> getAllUserInputs();
+    void tick();
 
     void processDUMP(const std::string& data);
     void processTICK(const std::string& data);

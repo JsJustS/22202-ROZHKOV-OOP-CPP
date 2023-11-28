@@ -9,6 +9,7 @@
 #include <string>
 #include <limits>
 #include <vector>
+#include <chrono>
 #include "Rule.h"
 #include "Field.h"
 
@@ -27,6 +28,9 @@ private:
     Rule* birthRule;
     Rule* survivalRule;
 
+    std::ostream* logger;
+
+    void log(const std::string& message);
     void checkForIntegrity();
     void parseMeta(const std::vector<std::string> & data, int lineIndex);
     void processFileFormat(const std::vector<std::string> & data);
@@ -37,6 +41,8 @@ public:
 
     ConfigManager();
     ~ConfigManager();
+
+    void setLogger(std::ostream& out);
 
     // loads settings from file with the specified name
     std::vector<std::pair<int, int>> load(const std::string& universe);

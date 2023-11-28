@@ -3,11 +3,6 @@
 //
 #include "../header/Engine.h"
 
-#define MIN_WINDOW_WIDTH 30
-#define MIN_WINDOW_HEIGHT 7
-
-Engine* Engine::instance = nullptr;
-
 Engine::Engine() {
     this->inputManager = nullptr;
     this->field = nullptr;
@@ -23,48 +18,46 @@ Engine::Engine() {
 }
 
 void Engine::init() {;
-    instance = new Engine();
-    instance->screen = new ConsoleScreen(30, 5);
-    instance->inputManager = new InputManager();
+    this->screen = new ConsoleScreen(30, 5);
+    this->inputManager = new InputManager();
 
     Input* inputType = new ConsoleInput();
-    instance->inputManager->setInputType((*inputType));
+    this->inputManager->setInputType((*inputType));
 }
 
 void Engine::stop() {
-    delete instance->config;
-    delete instance->field;
-    delete instance->fieldOld;
-    delete instance->screen;
-    delete instance->inputManager;
-    delete instance;
-    instance = nullptr;
+    delete this->config;
+    delete this->field;
+    delete this->fieldOld;
+    delete this->screen;
+    delete this->inputManager;
 }
 
 void Engine::loadConfig(const std::string &filename) {
-    instance->config = new ConfigManager();
+    this->config = new ConfigManager();
     std::vector<std::pair<int, int>> coords;
 
     if (filename.empty()) {
         std::string randFile = Engine::getRandomConfig();
         Engine::log("No config provided, using \"" + randFile + "\" from \"\\examples\".");
-        coords = instance->config->load(Engine::getGameDir() + "\\examples\\" + randFile);
+        coords = this->config->load(Engine::getGameDir() + "\\examples\\" + randFile);
     } else {
-        coords = instance->config->load(filename);
+        coords = this->config->load(filename);
     }
 
+    this->config->setLogger(*this->logger);
 
-    int fw = instance->config->getFieldWidth();
-    int fh = instance->config->getFieldHeight();
+    int fw = this->config->getFieldWidth();
+    int fh = this->config->getFieldHeight();
 
-    instance->field = new Field(fw,fh);
-    instance->fieldOld = new Field(fw,fh);
+    this->field = new Field(fw,fh);
+    this->fieldOld = new Field(fw,fh);
 
-    instance->field->load(coords);
+    this->field->load(coords);
 
     int w = (MIN_WINDOW_WIDTH > 2*fw + 3) ? MIN_WINDOW_WIDTH : 2*fw + 3;
     int h = (MIN_WINDOW_HEIGHT > fh + 6) ? MIN_WINDOW_HEIGHT : fh + 6;
-    instance->screen->setWidth(w).setHeight(h);
+    this->screen->setWidth(w).setHeight(h);
 }
 
 std::string Engine::getRandomConfig() {
@@ -98,17 +91,12 @@ std::string Engine::getRandomConfig() {
 
 bool Engine::dump(const std::string &filenamelong) {
     std::string filename{};
-    if (filenamelong.rfind('.') != std::string::npos) {
-        int c = filenamelong.rfind('.');
-        std::string suffix = filenamelong.substr(c, filenamelong.length() - c);
-        filename = filenamelong.substr(0, c);
-        if (suffix != ".lif" && suffix != ".life") {
-            Engine::log("Wrong Format! using standard .lif");
-        }
+    if (filenamelong.rfind('.') == std::string::npos) {
+        filename = filenamelong + ".lif";
     } else {
         filename = filenamelong;
     }
-    FileWriter writer(filename + ".lif");
+    FileWriter writer(filename);
 
     writer.open();
     if (!writer.isOpen()) {
@@ -116,18 +104,18 @@ bool Engine::dump(const std::string &filenamelong) {
         return false;
     }
 
-    writer.writeLine("#Life " + instance->config->getFileFormat());
-    writer.writeLine("#N " + instance->config->getUniverseName());
-    writer.writeLine("#S " + std::to_string(instance->config->getFieldWidth()) + "/" +
-                        std::to_string(instance->config->getFieldHeight()));
-    writer.writeLine("#R " + instance->config->getRulesAsString());
+    writer.writeLine("#Life " + this->config->getFileFormat());
+    writer.writeLine("#N " + this->config->getUniverseName());
+    writer.writeLine("#S " + std::to_string(this->config->getFieldWidth()) + "/" +
+                        std::to_string(this->config->getFieldHeight()));
+    writer.writeLine("#R " + this->config->getRulesAsString());
 
-    int width = instance->config->getFieldWidth();
-    int height = instance->config->getFieldHeight();
+    int width = this->config->getFieldWidth();
+    int height = this->config->getFieldHeight();
 
     for (int y = 0; y < height; ++y) {
         for (int x = 0; x < width; ++x) {
-            if (instance->field->getCell(x, y)) {
+            if (this->field->getCell(x, y)) {
                 writer.writeLine(std::to_string(x) + " " + std::to_string(y));
             }
         }
@@ -138,109 +126,108 @@ bool Engine::dump(const std::string &filenamelong) {
 }
 
 void Engine::setLogger(std::ostream &out) {
-    delete instance->logger;
-    instance->logger = &out;
+    this->logger = &out;
 }
 
 void Engine::log(const std::string &message) {
-    if (instance->logger == nullptr) return;
-    (*instance->logger) << message << std::endl;
+    if (this->logger == nullptr) return;
+    (*this->logger) << message << std::endl;
 }
 
 void Engine::clearScreen() {
-    instance->screen->clear();
+    this->screen->clear();
 }
 
 void Engine::drawGUI(int textColor, int barrierColor) {
-    int textX = (instance->screen->getWidth() - instance->config->getUniverseName().length()) / 2;
+    int textX = (this->screen->getWidth() - this->config->getUniverseName().length()) / 2;
     if (textX < 0) {
         textX = 0;
     }
-    instance->screen->addText(textX, 1,
-                              instance->config->getUniverseName(),
-                              textColor);
-    instance->screen->addLine(0, 0,
-                              instance->screen->getWidth() - 1, 0,
-                              barrierColor);
+    this->screen->addText(textX, 1,
+                          this->config->getUniverseName(),
+                          textColor);
+    this->screen->addLine(0, 0,
+                          this->screen->getWidth() - 1, 0,
+                          barrierColor);
 
-    std::string genText = "GEN: " + std::to_string(instance->generation);
-    textX = (instance->screen->getWidth() - genText.length()) / 2;
+    std::string genText = "GEN: " + std::to_string(this->generation);
+    textX = (this->screen->getWidth() - genText.length()) / 2;
     if (textX < 0) {
         textX = 0;
     }
-    instance->screen->addText(textX, instance->screen->getHeight()-2,
+    this->screen->addText(textX, this->screen->getHeight()-2,
                               genText,
                               textColor);
 
-    std::string ruleText = instance->config->getRulesAsString();
-    textX = (instance->screen->getWidth() - ruleText.length()) / 2;
+    std::string ruleText = this->config->getRulesAsString();
+    textX = (this->screen->getWidth() - ruleText.length()) / 2;
     if (textX < 0) {
         textX = 0;
     }
-    instance->screen->addText(textX, instance->screen->getHeight()-1,
+    this->screen->addText(textX, this->screen->getHeight()-1,
                               ruleText,
                               textColor);
 }
 
 void Engine::drawField(int aliveColor, int deadColor, int barrierColor) {
-    int width = instance->config->getFieldWidth();
-    int height = instance->config->getFieldHeight();
+    int width = this->config->getFieldWidth();
+    int height = this->config->getFieldHeight();
 
-    int deltaX = (instance->screen->getWidth() - 2*width - 3) / 2;
-    if ((instance->screen->getWidth() - 2*width - 3 - deltaX) < deltaX) {
+    int deltaX = (this->screen->getWidth() - 2*width - 3) / 2;
+    if ((this->screen->getWidth() - 2*width - 3 - deltaX) < deltaX) {
         deltaX += 1;
     }
 
-    instance->screen->addLine(deltaX, 2,
+    this->screen->addLine(deltaX, 2,
                               deltaX + 2*width + 2, 2,
                               barrierColor);
-    instance->screen->addLine(deltaX + 2*width + 2, 2,
-                              deltaX + 2*width + 2, instance->screen->getHeight() - 3,
+    this->screen->addLine(deltaX + 2*width + 2, 2,
+                              deltaX + 2*width + 2, this->screen->getHeight() - 3,
                               barrierColor);
-    instance->screen->addLine(deltaX + 2*width + 2, instance->screen->getHeight() - 3,
-                              deltaX, instance->screen->getHeight() - 3,
+    this->screen->addLine(deltaX + 2*width + 2, this->screen->getHeight() - 3,
+                              deltaX, this->screen->getHeight() - 3,
                               barrierColor);
-    instance->screen->addLine(deltaX, instance->screen->getHeight() - 3,
+    this->screen->addLine(deltaX, this->screen->getHeight() - 3,
                               deltaX, 2,
                               barrierColor);
 
     for (int y = 0; y < height; ++y) {
         for (int x = 0; x < width; ++x) {
-            instance->screen->addPixel(2*x+2+deltaX, y+3,(instance->field->getCell(x, y)) ? aliveColor : deadColor);
+            this->screen->addPixel(2*x+2+deltaX, y+3,(this->field->getCell(x, y)) ? aliveColor : deadColor);
         }
     }
 }
 
 void Engine::drawText(int x, int y, const std::string& text, int textColor) {
-    instance->screen->addText(x, y, text, textColor);
+    this->screen->addText(x, y, text, textColor);
 }
 
 void Engine::drawScreen() {
-    instance->screen->render();
+    this->screen->render();
 }
 
 void Engine::tickField() {
-    int width = instance->config->getFieldWidth();
-    int height = instance->config->getFieldHeight();
+    int width = this->config->getFieldWidth();
+    int height = this->config->getFieldHeight();
 
-    (*instance->fieldOld) = (*instance->field);
+    (*this->fieldOld) = (*this->field);
 
     for (int y = 0; y < height; ++y) {
         for (int x = 0; x < width; ++x) {
-            char count = instance->fieldOld->countAliveNeighbours(x, y);
-            bool shouldBirth = instance->config->canBirth(count);
-            bool shouldSurvive = instance->config->canSurvive(count);
+            char count = this->fieldOld->countAliveNeighbours(x, y);
+            bool shouldBirth = this->config->canBirth(count);
+            bool shouldSurvive = this->config->canSurvive(count);
 
-            if (instance->fieldOld->getCell(x, y)) {
-                instance->field->setCell(x, y, shouldSurvive);
+            if (this->fieldOld->getCell(x, y)) {
+                this->field->setCell(x, y, shouldSurvive);
             } else {
-                instance->field->setCell(x, y, shouldBirth);
+                this->field->setCell(x, y, shouldBirth);
             }
 
         }
     }
 
-    instance->generation++;
+    this->generation++;
 }
 
 std::string Engine::getGameDir() {
@@ -255,7 +242,7 @@ void Engine::startOnline() {
     int aliveCellColor = ConsoleScreen::rgb2Int(255, 255, 255);
     int deadCellColor = ConsoleScreen::rgb2Int(0, 0, 0);
 
-    while (!instance->exitcode) {
+    while (!this->exitcode) {
         if (Engine::shouldScreenUpdate()) {
             Engine::clearScreen();
             Engine::drawGUI(textColor, barrierColor);
@@ -269,17 +256,41 @@ void Engine::startOnline() {
 }
 
 void Engine::tickUserInput() {
-    instance->inputManager->processActions();
+    // fetch all inputs for current tick from user (Commands, Keyboard, Touchscreen, etc...)
+    // todo: finish
+    this->inputManager->tick();
+    std::vector<Action> userActions = this->inputManager->getAllUserInputs();
+    for (Action& action : userActions) {
+        ActionResult result = action.act();
+
+        bool isTickConsumed = false;
+        switch (result) {
+            case CONSUME:
+                isTickConsumed = true;
+                break;
+            case TERMINATE:
+                this->setExit(true);
+                isTickConsumed = true;
+                break;
+            case PASS:
+            default:
+                break;
+        }
+
+        if (isTickConsumed) {
+            break;
+        }
+    }
 }
 
 void Engine::setExit(bool code) {
-    instance->exitcode = code;
+    this->exitcode = code;
 }
 
-bool Engine::shouldScreenUpdate() {
-    return instance->needsScreenUpdate;
+bool Engine::shouldScreenUpdate() const {
+    return this->needsScreenUpdate;
 }
 
 void Engine::setScreenUpdate(bool bl) {
-    instance->needsScreenUpdate = bl;
+    this->needsScreenUpdate = bl;
 }
