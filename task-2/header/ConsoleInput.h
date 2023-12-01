@@ -14,6 +14,6 @@
  * */
  class ConsoleInput : public Input {
  public:
-     std::vector<std::pair<int, std::string>> getQueuedActions() override;
+     std::vector<std::pair<UserAction, std::vector<std::string>>> getQueuedActions() override;
  };
 #endif //TASK_2_CONSOLEINPUT_H

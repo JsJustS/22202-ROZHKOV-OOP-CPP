@@ -11,88 +11,24 @@ InputManager::~InputManager() {
     delete this->input;
 }
 
-void InputManager::setInputType(Input &inp) {
+void InputManager::setInputDevice(Input &inp) {
     this->input = &inp;
 }
 
 void InputManager::tick() {
+    std::vector<std::pair<UserAction, std::vector<std::string>>> freshUserActions = this->input->getQueuedActions();
+    for (const std::pair<UserAction, std::vector<std::string>> &userActionWithData: freshUserActions) {
+        this->queue.push_back(
+                Actions::generate(
+                        userActionWithData.first,
+                        userActionWithData.second
+                )
+        );
+    }
+}
+
+std::vector<Action> InputManager::getUserActions() {
+    std::vector<Action> temp(this->queue);
     this->queue.clear();
-    this->input->getQueuedActions();
-}
-
-std::vector<Action> InputManager::getAllUserInputs() {
-    return std::vector<Action>();
-}
-
-void InputManager::processActions() {
-    // todo: Вытащить наружу.
-    std::vector<std::pair<int, std::string>> queue = this->input->getQueuedActions();
-
-    if (queue.empty()) {
-        Engine::setScreenUpdate(true);
-        return;
-    }
-
-    // todo: сделать средствами полиморфизма.
-    for (std::pair<int, std::string> pair : queue) {
-        ACTION action = static_cast<ACTION>(pair.first);
-        std::string data = pair.second;
-        switch (action) {
-
-            case DUMP: {
-                this->processDUMP(data);
-                break;
-            }
-            case TICK: {
-                this->processTICK(data);
-                break;
-            }
-            case EXIT: {
-                this->processEXIT(data);
-                break;
-            }
-            case HELP: {
-                this->processHELP(data);
-                break;
-            }
-        }
-    }
-}
-
-void InputManager::processDUMP(const std::string &data) {
-    if (Engine::dump(data)) {
-        Engine::log("Universe dumped!");
-    }
-}
-
-void InputManager::processTICK(const std::string &data) {
-    if (!LineParser::isNumeric(data)) {
-        processHELP("");
-        return;
-    }
-
-    int n = std::stoi(data);
-    if (n < 1) {
-        processHELP("");
-        return;
-    }
-
-    for (int i = 0; i < n; ++i) {
-        Engine::tickField();
-    }
-
-    Engine::setScreenUpdate(true);
-}
-
-void InputManager::processEXIT(const std::string &data) {
-    Engine::setExit(true);
-}
-
-void InputManager::processHELP(const std::string &data) {
-    Engine::log("All existing commands:");
-    Engine::log("* dump <filename> - save current iteration as a universe.");
-    Engine::log("* tick <n=1> - iterate for n generations.");
-    Engine::log("* t <n=1> - same as \"tick\".");
-    Engine::log("* exit - leave program.");
-    Engine::log("* help - print this text.");
+    return temp;
 }

@@ -6,7 +6,7 @@
 #define TASK_2_INPUTMANAGER_H
 
 #include "Input.h"
-#include "Action.h"
+#include "Actions.h"
 #include <vector>
 #include <string>
 
@@ -21,13 +21,8 @@ public:
     InputManager();
     ~InputManager();
 
-    void setInputType(Input& inp);
-    std::vector<Action> getAllUserInputs();
+    void setInputDevice(Input& inp);
+    std::vector<Action> getUserActions();
     void tick();
-
-    void processDUMP(const std::string& data);
-    void processTICK(const std::string& data);
-    void processEXIT(const std::string& data);
-    void processHELP(const std::string& data);
 };
 #endif //TASK_2_INPUTMANAGER_H

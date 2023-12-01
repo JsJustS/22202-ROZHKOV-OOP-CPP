@@ -22,7 +22,7 @@ void Engine::init() {;
     this->inputManager = new InputManager();
 
     Input* inputType = new ConsoleInput();
-    this->inputManager->setInputType((*inputType));
+    this->inputManager->setInputDevice((*inputType));
 }
 
 void Engine::stop() {
@@ -243,36 +243,41 @@ void Engine::startOnline() {
     int deadCellColor = ConsoleScreen::rgb2Int(0, 0, 0);
 
     while (!this->exitcode) {
-        if (Engine::shouldScreenUpdate()) {
-            Engine::clearScreen();
-            Engine::drawGUI(textColor, barrierColor);
-            Engine::drawField(aliveCellColor, deadCellColor, barrierColor);
-            Engine::drawScreen();
-            Engine::setScreenUpdate(false);
+        if (this->shouldScreenUpdate()) {
+            this->clearScreen();
+            this->drawGUI(textColor, barrierColor);
+            this->drawField(aliveCellColor, deadCellColor, barrierColor);
+            this->drawScreen();
+            this->setScreenUpdate(false);
         }
 
-        Engine::tickUserInput();
+        this->tickUserInput();
     }
 }
 
 void Engine::tickUserInput() {
     // fetch all inputs for current tick from user (Commands, Keyboard, Touchscreen, etc...)
-    // todo: finish
     this->inputManager->tick();
-    std::vector<Action> userActions = this->inputManager->getAllUserInputs();
+    std::vector<Action> userActions = this->inputManager->getUserActions();
+
+    if (userActions.empty()) {
+        this->setScreenUpdate(true);
+        return;
+    }
+
     for (Action& action : userActions) {
-        ActionResult result = action.act();
+        ActionResult result = action.act(this);
 
         bool isTickConsumed = false;
         switch (result) {
-            case CONSUME:
+            case ActionResult::CONSUME:
                 isTickConsumed = true;
                 break;
-            case TERMINATE:
+            case ActionResult::TERMINATE:
                 this->setExit(true);
                 isTickConsumed = true;
                 break;
-            case PASS:
+            case ActionResult::PASS:
             default:
                 break;
         }

@@ -7,6 +7,8 @@
 /**
  * Main class for the game
  * */
+#include "Executor.h"
+
 #include <iostream>
 #include <utility>
 #include <chrono>
@@ -22,7 +24,7 @@
 #include "InputManager.h"
 #include "FileWriter.h"
 
-class Engine {
+class Engine : public Executor {
 private:
     Field* field;
     Field* fieldOld;
@@ -65,7 +67,7 @@ public:
     bool shouldScreenUpdate() const;
     void setScreenUpdate(bool bl);
 
-    void tickField();
+    void tickField() override;
     void tickUserInput();
 };
 #endif //TASK_2_ENGINE_H
