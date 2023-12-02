@@ -47,16 +47,16 @@ public:
     void operator=(Engine const&) = delete;
 
     void startOnline();
-    void stop();
-    void init();
+    void stop() override;
+    void init() override;
 
-    void setExit(bool code);
+    void setExit(bool code) override;
     void setLogger(std::ostream& out);
-    void log(const std::string &message);
+    void log(const std::string &message) override;
 
     void loadConfig(const std::string& filename = "");
     static std::string getRandomConfig();
-    bool dump(const std::string& filename);
+    bool dump(const std::string& filename) override;
 
     void clearScreen();
     void drawGUI(int textColor, int barrierColor);
@@ -65,9 +65,9 @@ public:
     void drawScreen();
 
     bool shouldScreenUpdate() const;
-    void setScreenUpdate(bool bl);
+    void setScreenUpdate(bool bl) override;
 
-    void tickField() override;
+    void tickGameLogic() override;
     void tickUserInput();
 };
 #endif //TASK_2_ENGINE_H

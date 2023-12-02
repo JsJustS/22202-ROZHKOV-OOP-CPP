@@ -30,7 +30,7 @@ int main(int argc, char* argv[]) {
     } else if (handler.hasOutputFilename() && handler.hasIterations()) {
         // Offline mode
         for (int i = 0; i < handler.getIterations(); ++i) {
-            engine.tickField();
+            engine.tickGameLogic();
         }
         engine.dump(handler.getOutputFilename());
         engine.log("Successfully iterated for " + std::to_string(handler.getIterations()) + " iteration(s).");

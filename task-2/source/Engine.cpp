@@ -206,7 +206,7 @@ void Engine::drawScreen() {
     this->screen->render();
 }
 
-void Engine::tickField() {
+void Engine::tickGameLogic() {
     int width = this->config->getFieldWidth();
     int height = this->config->getFieldHeight();
 

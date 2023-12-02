@@ -4,23 +4,26 @@
 
 #include "../header/Actions.h"
 
+#define TASK [](Executor *engine, const std::vector<std::string> & data) -> ActionResult
+
+// INIT RUNNABLES MAP
 std::map<UserAction, Actions::Runnable> Actions::RUNNABLES = {
         {
-                UserAction::HELP, [](Executor *engine, const std::vector<std::string> & data) -> ActionResult {
+                UserAction::HELP, TASK {
             Actions::printHelpList(engine);
 
             return ActionResult::PASS;
         }
         },
         {
-                UserAction::EXIT, [](Executor *engine, const std::vector<std::string> & data) -> ActionResult {
+                UserAction::EXIT,  TASK {
             engine->setExit(true);
 
             return ActionResult::TERMINATE;
         }
         },
         {
-                UserAction::DUMP, [](Executor *engine, const std::vector<std::string> & data) -> ActionResult {
+                UserAction::DUMP, TASK {
             if (engine->dump(data[0])) {
                 engine->log("Universe dumped!");
             }
@@ -29,7 +32,7 @@ std::map<UserAction, Actions::Runnable> Actions::RUNNABLES = {
         }
         },
         {
-                UserAction::TICK, [](Executor *engine, const std::vector<std::string> & data) -> ActionResult {
+                UserAction::TICK, TASK {
             if (!LineParser::isNumeric(data[0])) {
                 Actions::printHelpList(engine);
                 return ActionResult::PASS;
@@ -42,7 +45,7 @@ std::map<UserAction, Actions::Runnable> Actions::RUNNABLES = {
             }
 
             for (int i = 0; i < n; ++i) {
-                engine->tickField();
+                engine->tickGameLogic();
             }
 
             engine->setScreenUpdate(true);
