@@ -12,6 +12,8 @@
 #include <chrono>
 #include "Rule.h"
 #include "Field.h"
+#include "FileReader.h"
+#include "LineParser.h"
 
 /**
  * RunTime container for Game Settings:
