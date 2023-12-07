@@ -7,7 +7,7 @@
 #include <fstream>
 #include "header/WAVWrapper.h"
 
-int main (int argc, char* argv[]) {
+int main(int argc, char *argv[]) {
     /**
      * 1. Open File
      * 2. Read part of it
@@ -16,11 +16,20 @@ int main (int argc, char* argv[]) {
      * 5. If no converter left, save .temp as .wav
      * else open .temp and use next converter
      * */
-    std::ifstream file ("test.wav");
+    WAVWrapper wav("test.wav");
+    wav.open("testOut.wav", WAVWrapper::MODE::OUTPUT);
 
-    WAVWrapper wav{};
-    wav.readHeader(file);
+    if (wav.isOpen(WAVWrapper::MODE::INPUT) && wav.isOpen(WAVWrapper::MODE::OUTPUT)) {
+        wav.readHeader();
+        wav.writeHeader();
+        while (!wav.isEOF()) {
+            Sample sample = wav.readSample();
+            // modify sample
+            wav.loadSample(sample);
+            wav.writeSample();
+        }
+    }
 
-    file.close();
+    wav.close();
     return 0;
 }
