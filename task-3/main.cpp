@@ -2,10 +2,12 @@
 // Created by Just on 02.12.2023.
 //
 
-
-
-#include <fstream>
 #include "header/WAVWrapper.h"
+
+void modify(Sample& sample) {
+    int16_t sampleValue = sample.getAsInt();
+    sample.saveAsInt(sampleValue / 2);
+}
 
 int main(int argc, char *argv[]) {
     /**
@@ -24,7 +26,7 @@ int main(int argc, char *argv[]) {
         wav.writeHeader();
         while (!wav.isEOF()) {
             Sample sample = wav.readSample();
-            // modify sample
+            modify(sample);
             wav.loadSample(sample);
             wav.writeSample();
         }

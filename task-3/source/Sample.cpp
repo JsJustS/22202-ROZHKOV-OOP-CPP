@@ -2,6 +2,7 @@
 // Created by Just on 02.12.2023.
 //
 
+#include <cstring>
 #include "../header/Sample.h"
 
 Sample::~Sample() {
@@ -21,10 +22,6 @@ void Sample::write(std::ofstream &stream) {
     stream.write(this->data, this->size);
 }
 
-void Sample::writeByte(std::ofstream &stream, Sample::Byte byte) {
-    stream.write(reinterpret_cast<const char*>(&byte), 1);
-}
-
 uint16_t Sample::getSize() const {
     return this->size;
 }
@@ -42,5 +39,19 @@ Sample &Sample::operator=(const Sample &otherSample) {
     }
 
     return *this;
+}
+
+Sample::Byte &Sample::operator[](int i) {
+    return this->data[i];
+}
+
+void Sample::saveAsInt(int16_t value) {
+    this->data = static_cast<char*>(static_cast<void*>(&(value)));
+}
+
+int16_t Sample::getAsInt() {
+    int16_t value;
+    std::memcpy(&value, this->data, sizeof(int16_t));
+    return value;
 }
 

@@ -8,23 +8,25 @@
 #include <cstdint>
 #include <fstream>
 
+#define SIGN_DELTA 32768
+
 class Sample {
     typedef char Byte;
 private:
     uint16_t size;
     Byte* data;
-
-    static void writeByte(std::ofstream& stream, Byte value);
 public:
     ~Sample();
     explicit Sample(uint16_t size);
 
-    //todo: operator[]
-    //todo: operator=
+    Byte& operator[](int i);
 
     Sample& operator=(const Sample& otherSample);
 
     uint16_t getSize() const;
+
+    void saveAsInt(int16_t value);
+    int16_t getAsInt();
 
     void read(std::ifstream& stream);
     void write(std::ofstream& stream);
