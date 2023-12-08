@@ -12,6 +12,8 @@
 #include "Converter.h"
 #include "ConverterFabric.h"
 #include "ConfigManager.h"
+#include "LineParser.h"
+#include "FileReader.h"
 
 /**
  * Manages the process of conversion
@@ -23,12 +25,12 @@ private:
     std::string outputFileName;
     std::vector<std::string> inputFileNames;
 
-    static bool areInputsOpen(std::vector<WAVWrapper> wrappers);
+    static bool areInputsOpen(int size, WAVWrapper* wrappers);
 public:
     SoundProcessor();
     ~SoundProcessor();
 
-    void printOutHelp(std::ostream& out);
+    static void printOutHelp(std::ostream& out);
 
     void loadConfig(const std::string& fileName);
     void setOutputFileName(const std::string& fileName);

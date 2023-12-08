@@ -3,11 +3,12 @@
 //
 #include "../header/ConfigManager.h"
 
-std::string ConfigManager::getOutputFileName() {
-    return this->outputFileName;
+std::vector<ConverterFabric> ConfigManager::getFabrics() {
+    //todo: get fabrics by config
+    std::vector<ConverterFabric> fabrics{};
+    return fabrics;
 }
 
-std::vector<std::string> ConfigManager::getInputFileNames() {
-    return this->inputFileNames;
+void ConfigManager::appendConverterFabric(std::vector<std::string> args) {
+    //todo: load config from file
 }
-

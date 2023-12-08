@@ -7,6 +7,12 @@
 
 Sample::~Sample() {
     delete [] this->data;
+    this->data = nullptr;
+}
+
+Sample::Sample() {
+    this->size = 2;
+    this->data = new Byte[2];
 }
 
 Sample::Sample(uint16_t size) {
@@ -55,3 +61,10 @@ int16_t Sample::getAsInt() {
     return value;
 }
 
+Sample::Sample(const Sample &otherSample) {
+    this->size = otherSample.size;
+    this->data = new Byte[this->size];
+    for (int i = 0; i < this->size; ++i) {
+        this->data[i] = otherSample.data[i];
+    }
+}

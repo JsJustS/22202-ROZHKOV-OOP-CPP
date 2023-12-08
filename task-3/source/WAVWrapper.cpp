@@ -79,6 +79,7 @@ bool WAVWrapper::isOpen(WAVWrapper::MODE mode) {
     switch (mode) {
         case INPUT: return this->WAVInputFileStream->is_open();
         case OUTPUT: return this->WAVOutputFileStream->is_open();
+        default: return false;
     }
 }
 
@@ -90,7 +91,7 @@ void WAVWrapper::close() {
 void WAVWrapper::close(WAVWrapper::MODE mode) {
     switch (mode) {
         case INPUT: {
-            if (this->WAVInputFileStream->is_open()) {
+            if (this->WAVInputFileStream != nullptr && this->WAVInputFileStream->is_open()) {
                 this->WAVInputFileStream->close();
             }
             delete this->WAVInputFileStream;
@@ -98,7 +99,7 @@ void WAVWrapper::close(WAVWrapper::MODE mode) {
             break;
         }
         case OUTPUT: {
-            if (this->WAVOutputFileStream->is_open()) {
+            if (this->WAVOutputFileStream != nullptr && this->WAVOutputFileStream->is_open()) {
                 this->WAVOutputFileStream->close();
             }
             delete this->WAVOutputFileStream;

@@ -7,6 +7,7 @@
 
 #include <string>
 #include <vector>
+#include "ConverterFabric.h"
 
 /**
  * Manages config (no way, couldn't guess).
@@ -15,5 +16,8 @@
 class ConfigManager {
 private:
 public:
+    std::vector<ConverterFabric> getFabrics();
+
+    void appendConverterFabric(std::vector<std::string> args);
 };
 #endif //TASK_3_CONFIGMANAGER_H

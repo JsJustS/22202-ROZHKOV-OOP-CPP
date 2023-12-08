@@ -17,6 +17,8 @@ private:
     Byte* data;
 public:
     ~Sample();
+    Sample();
+    Sample(const Sample& otherSample);
     explicit Sample(uint16_t size);
 
     Byte& operator[](int i);

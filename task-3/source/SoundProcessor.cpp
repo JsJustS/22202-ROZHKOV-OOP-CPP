@@ -18,6 +18,7 @@ void SoundProcessor::process() {
      * 3. Apply Converter
      * 4. Save result
      * */
+     int inputCount = this->inputFileNames.size();
     std::vector<ConverterFabric> converterFabrics = this->getFabricsByConfig();
     std::vector<Converter*> converters{};
     converters.reserve(converterFabrics.size());
@@ -26,45 +27,50 @@ void SoundProcessor::process() {
     }
 
     // open all wav files
-    std::vector<WAVWrapper> wrappers{};
-    wrappers.reserve(this->inputFileNames.size());
-    for (auto&& inputFileName : this->inputFileNames) {
-        wrappers.emplace_back(inputFileName, WAVWrapper::MODE::INPUT);
-    }
+    //WAVWrapper* wrappers = new WAVWrapper[this->inputFileNames.size()];
+    //for (int i = 0; i < this->inputFileNames.size(); ++i) { //auto&& inputFileName : this->inputFileNames) {
+    //    wrappers[i] = WAVWrapper(this->inputFileNames[i], WAVWrapper::MODE::INPUT);
+    //}
+    WAVWrapper wrapper(this->inputFileNames[0], WAVWrapper::MODE::INPUT);
     WAVWrapper outputWAV(this->outputFileName, WAVWrapper::MODE::OUTPUT);
 
     // start process
-    if (SoundProcessor::areInputsOpen(wrappers) && outputWAV.isOpen(WAVWrapper::MODE::OUTPUT)) {
+    //if (SoundProcessor::areInputsOpen(this->inputFileNames.size(), wrappers) &&  outputWAV.isOpen(WAVWrapper::MODE::OUTPUT)) {
+    if (wrapper.isOpen(WAVWrapper::MODE::INPUT) &&  outputWAV.isOpen(WAVWrapper::MODE::OUTPUT)) {
         // headers
-        for (auto&& wrapper : wrappers) {
-            wrapper.readHeader();
-        }
-        outputWAV.setHeader(wrappers[0].getHeader());
+
+        // for (int i = 0; i < this->inputFileNames.size(); ++i) {
+        //     wrappers[i].readHeader();
+        // }
+        // outputWAV.setHeader(wrappers[0].getHeader());
+
+        wrapper.readHeader();
+        outputWAV.setHeader(wrapper.getHeader());
         outputWAV.writeHeader();
 
         // modify samples
-        std::vector<Sample> samples{};
-        samples.reserve(wrappers.size());
-        while (!wrappers[0].isEOF()) {
-            for (auto&& wrapper : wrappers) {
-                samples.emplace_back(wrapper.readSample());
+        Sample* samples = new Sample[inputCount];
+        //while (!wrappers[0].isEOF()) {
+        while (!wrapper.isEOF()) {
+
+            for (int i = 0; i < inputCount; ++i) {
+                samples[i] = wrapper.readSample();
             }
 
             for (auto&& converter : converters) {
-                samples[0] = converter->modify(samples);
+                samples[0] = converter->modify(inputCount, samples);
             }
 
             outputWAV.loadSample(samples[0]);
             outputWAV.writeSample();
-            samples.clear();
         }
+        delete [] samples;
     }
 
     // close all files
-    for (auto&& wrapper : wrappers) {
-        wrapper.close();
-    }
-    outputWAV.close();
+    //delete [] wrappers;
+    wrapper.close(WAVWrapper::MODE::INPUT);
+    outputWAV.close(WAVWrapper::MODE::OUTPUT);
 
     // free converter memory
     for (auto&& converter : converters) {
@@ -72,10 +78,10 @@ void SoundProcessor::process() {
     }
 }
 
-bool SoundProcessor::areInputsOpen(std::vector<WAVWrapper> wrappers) {
+bool SoundProcessor::areInputsOpen(int size, WAVWrapper* wrappers) {
     bool flag = true;
-    for (auto&& wrapper : wrappers) {
-        if (!wrapper.isOpen()) {
+    for (int i = 0; i < size; ++i) {
+        if (!wrappers[i].isOpen(WAVWrapper::MODE::INPUT)) {
             flag = false;
             break;
         }
@@ -84,13 +90,15 @@ bool SoundProcessor::areInputsOpen(std::vector<WAVWrapper> wrappers) {
 }
 
 std::vector<ConverterFabric> SoundProcessor::getFabricsByConfig() {
-    //todo: get fabrics by config
-    this->config;
-    return std::vector<ConverterFabric>();
+    return this->config->getFabrics();
 }
 
 void SoundProcessor::loadConfig(const std::string &fileName) {
-    //todo: load config from file
+    FileReader reader(fileName);
+    for (std::string line; reader.hasNext(); line = reader.next()) {
+        std::vector<std::string> args = LineParser::parse(line);
+        this->config->appendConverterFabric(args);
+    }
 }
 
 void SoundProcessor::setOutputFileName(const std::string &fileName) {
@@ -102,5 +110,6 @@ void SoundProcessor::setInputFileNames(const std::vector<std::string> &fileNames
 }
 
 void SoundProcessor::printOutHelp(std::ostream &out) {
-
+    // todo: print out helper for every converter
+    out << "Help me please" << std::endl;
 }

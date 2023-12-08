@@ -4,6 +4,9 @@
 
 #ifndef INC_22202_ROZHKOV_OOP_CPP_TASK_3_CONVERTERFABRIC_H
 #define INC_22202_ROZHKOV_OOP_CPP_TASK_3_CONVERTERFABRIC_H
+
+#include "Converter.h"
+
 class ConverterFabric {
 public:
     virtual Converter* getConverter() = 0;
