@@ -27,34 +27,27 @@ void SoundProcessor::process() {
     }
 
     // open all wav files
-    //WAVWrapper* wrappers = new WAVWrapper[this->inputFileNames.size()];
-    //for (int i = 0; i < this->inputFileNames.size(); ++i) { //auto&& inputFileName : this->inputFileNames) {
-    //    wrappers[i] = WAVWrapper(this->inputFileNames[i], WAVWrapper::MODE::INPUT);
-    //}
-    WAVWrapper wrapper(this->inputFileNames[0], WAVWrapper::MODE::INPUT);
+    WAVWrapper* wrappers = new WAVWrapper[this->inputFileNames.size()];
+    for (int i = 0; i < this->inputFileNames.size(); ++i) {
+        wrappers[i].open(this->inputFileNames[i], WAVWrapper::MODE::INPUT);
+    }
     WAVWrapper outputWAV(this->outputFileName, WAVWrapper::MODE::OUTPUT);
 
     // start process
-    //if (SoundProcessor::areInputsOpen(this->inputFileNames.size(), wrappers) &&  outputWAV.isOpen(WAVWrapper::MODE::OUTPUT)) {
-    if (wrapper.isOpen(WAVWrapper::MODE::INPUT) &&  outputWAV.isOpen(WAVWrapper::MODE::OUTPUT)) {
+    if (SoundProcessor::areInputsOpen(this->inputFileNames.size(), wrappers) &&  outputWAV.isOpen(WAVWrapper::MODE::OUTPUT)) {
         // headers
-
-        // for (int i = 0; i < this->inputFileNames.size(); ++i) {
-        //     wrappers[i].readHeader();
-        // }
-        // outputWAV.setHeader(wrappers[0].getHeader());
-
-        wrapper.readHeader();
-        outputWAV.setHeader(wrapper.getHeader());
-        outputWAV.writeHeader();
+         for (int i = 0; i < this->inputFileNames.size(); ++i) {
+             wrappers[i].readHeader();
+         }
+         outputWAV.setHeader(wrappers[0].getHeader());
+         outputWAV.writeHeader();
 
         // modify samples
         Sample* samples = new Sample[inputCount];
-        //while (!wrappers[0].isEOF()) {
-        while (!wrapper.isEOF()) {
+        while (!wrappers[0].isEOF()) {
 
             for (int i = 0; i < inputCount; ++i) {
-                samples[i] = wrapper.readSample();
+                samples[i] = wrappers[0].readSample();
             }
 
             for (auto&& converter : converters) {
@@ -68,8 +61,7 @@ void SoundProcessor::process() {
     }
 
     // close all files
-    //delete [] wrappers;
-    wrapper.close(WAVWrapper::MODE::INPUT);
+    delete [] wrappers;
     outputWAV.close(WAVWrapper::MODE::OUTPUT);
 
     // free converter memory
