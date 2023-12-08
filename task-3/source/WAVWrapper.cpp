@@ -165,3 +165,14 @@ void WAVWrapper::writeByte(std::ofstream &stream, Byte byte) {
 bool WAVWrapper::isEOF() {
     return this->WAVInputFileStream == nullptr || !this->WAVInputFileStream->is_open() || this->WAVInputFileStream->eof();
 }
+
+WAVWrapper::HEADER_DATA WAVWrapper::getHeader() const {
+    return *this->headerData;
+}
+
+void WAVWrapper::setHeader(WAVWrapper::HEADER_DATA data) {
+    if (this->headerData == nullptr) {
+        this->headerData = new union HEADER_DATA;
+    }
+    this->headerData->header = data.header;
+}

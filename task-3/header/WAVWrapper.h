@@ -13,9 +13,6 @@
 #define HEADER_SIZE 44
 class WAVWrapper {
     typedef unsigned char Byte;
-private:
-
-    // wrapper data
 
     struct HEADER {
         char ChunkID[4];
@@ -37,6 +34,9 @@ private:
         Byte data[HEADER_SIZE];
         struct HEADER header;
     };
+private:
+
+    // wrapper data
 
     HEADER_DATA* headerData;
 
@@ -56,11 +56,14 @@ public:
         OUTPUT
     };
 
-    WAVWrapper(const WAVWrapper& copy) = delete;
+    //WAVWrapper(const WAVWrapper& copy) = delete;
 
     WAVWrapper();
     explicit WAVWrapper(const std::string& fileName, MODE mode = INPUT);
     ~WAVWrapper();
+
+    HEADER_DATA getHeader() const;
+    void setHeader(HEADER_DATA data);
 
     void open(MODE mode = INPUT);
     void open(const std::string& fileName, MODE mode = INPUT);
