@@ -51,7 +51,6 @@ void SoundProcessor::process() {
             }
 
             for (auto&& converter : converters) {
-                //todo: segfault on destruction of sample object
                 samples[0] = converter->modify(inputCount, samples);
             }
 
