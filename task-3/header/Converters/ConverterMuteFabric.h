@@ -10,10 +10,10 @@
 
 class ConverterMuteFabric : public ConverterFabric {
 private:
-    int secondStart;
-    int secondEnd;
+    unsigned int secondStart;
+    unsigned int secondEnd;
 public:
-    ConverterMuteFabric(int s, int e);
+    ConverterMuteFabric(unsigned int s, unsigned int e);
     Converter* getConverter() override;
 };
 #endif //INC_22202_ROZHKOV_OOP_CPP_TASK_3_CONVERTERMUTEFABRIC_H

@@ -7,7 +7,7 @@ Converter *ConverterMuteFabric::getConverter() {
     return new ConverterMute(this->secondStart, this->secondEnd);
 }
 
-ConverterMuteFabric::ConverterMuteFabric(int s, int e) {
+ConverterMuteFabric::ConverterMuteFabric(unsigned int s, unsigned int e) {
     this->secondStart = s;
     this->secondEnd = e;
 }

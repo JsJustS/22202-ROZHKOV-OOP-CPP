@@ -9,7 +9,9 @@
 #include <vector>
 #include <memory>
 #include "Converters/ConverterFabric.h"
+#include "Converters/ConverterMixFabric.h"
 #include "Converters/ConverterMuteFabric.h"
+#include "Converters/ConverterReverbFabric.h"
 #include "LineParser.h"
 
 /**

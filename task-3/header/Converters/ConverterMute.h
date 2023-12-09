@@ -9,11 +9,11 @@
 
 class ConverterMute : public Converter {
 private:
-    int startSampleId;
-    int lastSampleId;
-    int currentSampleId;
+    unsigned int startSampleId;
+    unsigned int lastSampleId;
+    unsigned int currentSampleId;
 public:
-    ConverterMute(int startSample, int lastSample);
+    ConverterMute(unsigned int startSample, unsigned int lastSample);
     std::string getHelp() override;
     Sample modify(int size, Sample* samples) override;
 };

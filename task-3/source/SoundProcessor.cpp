@@ -36,7 +36,7 @@ void SoundProcessor::process() {
     // start process
     if (SoundProcessor::areInputsOpen(this->inputFileNames.size(), wrappers) &&  outputWAV.isOpen(WAVWrapper::MODE::OUTPUT)) {
         // headers
-         for (int i = 0; i < this->inputFileNames.size(); ++i) {
+         for (int i = 0; i < inputCount; ++i) {
              wrappers[i].readHeader();
          }
          outputWAV.setHeader(wrappers[0].getHeader());
@@ -47,7 +47,7 @@ void SoundProcessor::process() {
         while (!wrappers[0].isEOF()) {
 
             for (int i = 0; i < inputCount; ++i) {
-                samples[i] = wrappers[0].readSample();
+                samples[i] = wrappers[i].readSample();
             }
 
             for (auto&& converter : converters) {

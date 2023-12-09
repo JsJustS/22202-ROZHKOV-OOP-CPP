@@ -4,7 +4,7 @@
 
 #include "../../header/Converters/ConverterMute.h"
 
-ConverterMute::ConverterMute(int secondStart, int secondEnd) {
+ConverterMute::ConverterMute(unsigned int secondStart, unsigned int secondEnd) {
     this->startSampleId = secondStart * SAMPLES_PER_SECOND;
     this->lastSampleId = secondEnd * SAMPLES_PER_SECOND;
     this->currentSampleId = -1;
@@ -15,10 +15,11 @@ Sample ConverterMute::modify(int size, Sample *samples) {
     if (this->startSampleId <= this->currentSampleId && this->currentSampleId <= this->lastSampleId) {
         return Sample(2).saveAsInt(0);
     }
-    return samples[0];
+    return Sample(2).saveAsInt(samples[0].getAsInt());
 }
 
 std::string ConverterMute::getHelp() {
+    //todo: help
     return std::string();
 }
 

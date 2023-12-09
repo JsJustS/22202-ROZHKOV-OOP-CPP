@@ -15,6 +15,7 @@ class Sample {
 private:
     uint16_t size;
     Byte* data;
+    bool loaded;
 public:
     ~Sample();
     Sample();
@@ -30,6 +31,7 @@ public:
     Sample& saveAsInt(int16_t value);
     int16_t getAsInt();
 
+    bool isLoaded() const;
     void read(std::ifstream& stream);
     void write(std::ofstream& stream);
 };

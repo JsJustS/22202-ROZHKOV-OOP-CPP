@@ -23,16 +23,25 @@ void ConfigManager::appendConverterFabric(std::vector<std::string>& args) {
         this->fabricList.push_back(std::make_shared<ConverterMuteFabric>(secondStart, secondEnd));
     } else if (converterName == "mix") {
         //todo: throw argument count error
-        if (args.size() != 3) { return; }
+        if (args.size() < 3 || args.size() > 4) { return; }
         //todo: throw argument error
-        //this->fabricList.push_back(std::make_shared<ConverterMixFabric>(secondStart, secondEnd));
+        if (args[1][0] != '$' || !LineParser::isNumeric(args[1].substr(1)) || !LineParser::isNumeric(args[2])) {return;}
+        int streamId = std::stoi(args[1].substr(1));
+        int secondStart = std::stoi(args[2]);
+        int secondEnd;
+        if (args.size() == 3) {
+            secondEnd = -1;
+        } else {
+            if (!LineParser::isNumeric(args[3])) {return;}
+            secondEnd = std::stoi(args[3]);
+        }
+        this->fabricList.push_back(std::make_shared<ConverterMixFabric>(streamId, secondStart, secondEnd));
     } else if (converterName == "reverb") {
         //todo: throw argument count error
-        if (args.size() != 3) { return; }
+        if (args.size() != 2) { return; }
         //todo: throw argument error
-        if (!LineParser::isNumeric(args[1]) || !LineParser::isNumeric(args[2])) { return; }
+        if (!LineParser::isNumeric(args[1])) { return; }
         int echoCount = std::stoi(args[1]);
-        int secondPart = std::stoi(args[2]);
-        //this->fabricList.push_back(std::make_shared<ConverterReverbFabric>(echoCount, secondPart));
+        this->fabricList.push_back(std::make_shared<ConverterReverbFabric>(echoCount));
     }
 }
