@@ -9,7 +9,7 @@
 #include <fstream>
 
 /**
- * Reads game files
+ * Reads files, config as example
  * */
 class FileReader {
 private:

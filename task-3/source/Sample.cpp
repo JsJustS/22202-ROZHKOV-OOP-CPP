@@ -7,7 +7,6 @@
 
 Sample::~Sample() {
     delete [] this->data;
-    this->data = nullptr;
 }
 
 Sample::Sample() {
@@ -51,8 +50,10 @@ Sample::Byte &Sample::operator[](int i) {
     return this->data[i];
 }
 
-void Sample::saveAsInt(int16_t value) {
-    this->data = static_cast<char*>(static_cast<void*>(&(value)));
+Sample& Sample::saveAsInt(int16_t value) {
+    std::memcpy(this->data, &value, sizeof(int16_t));
+    //this->data = static_cast<char*>(static_cast<void*>(&(value)));
+    return *this;
 }
 
 int16_t Sample::getAsInt() {

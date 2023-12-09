@@ -9,8 +9,8 @@
 #include <vector>
 
 #include "WAVWrapper.h"
-#include "Converter.h"
-#include "ConverterFabric.h"
+#include "Converters/Converter.h"
+#include "Converters/ConverterFabric.h"
 #include "ConfigManager.h"
 #include "LineParser.h"
 #include "FileReader.h"
@@ -38,7 +38,7 @@ public:
 
     void process();
 
-    std::vector<ConverterFabric> getFabricsByConfig();
+    std::vector<std::shared_ptr<ConverterFabric>> getFabricsByConfig();
 };
 
 #endif //TASK_3_CONVERTIONMANAGER_H

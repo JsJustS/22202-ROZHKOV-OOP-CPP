@@ -27,7 +27,7 @@ public:
 
     uint16_t getSize() const;
 
-    void saveAsInt(int16_t value);
+    Sample& saveAsInt(int16_t value);
     int16_t getAsInt();
 
     void read(std::ifstream& stream);

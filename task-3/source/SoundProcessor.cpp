@@ -18,12 +18,12 @@ void SoundProcessor::process() {
      * 3. Apply Converter
      * 4. Save result
      * */
-     int inputCount = this->inputFileNames.size();
-    std::vector<ConverterFabric> converterFabrics = this->getFabricsByConfig();
+    int inputCount = this->inputFileNames.size();
+    std::vector<std::shared_ptr<ConverterFabric>> converterFabrics = this->getFabricsByConfig();
     std::vector<Converter*> converters{};
     converters.reserve(converterFabrics.size());
     for (auto&& converterFabric : converterFabrics) {
-        converters.emplace_back(converterFabric.getConverter());
+        converters.emplace_back(converterFabric->getConverter());
     }
 
     // open all wav files
@@ -51,6 +51,7 @@ void SoundProcessor::process() {
             }
 
             for (auto&& converter : converters) {
+                //todo: segfault on destruction of sample object
                 samples[0] = converter->modify(inputCount, samples);
             }
 
@@ -81,14 +82,17 @@ bool SoundProcessor::areInputsOpen(int size, WAVWrapper* wrappers) {
     return flag;
 }
 
-std::vector<ConverterFabric> SoundProcessor::getFabricsByConfig() {
+std::vector<std::shared_ptr<ConverterFabric>> SoundProcessor::getFabricsByConfig() {
     return this->config->getFabrics();
 }
 
 void SoundProcessor::loadConfig(const std::string &fileName) {
     FileReader reader(fileName);
-    for (std::string line; reader.hasNext(); line = reader.next()) {
+    reader.open();
+    while (reader.hasNext()) {
+        std::string line = reader.next();
         std::vector<std::string> args = LineParser::parse(line);
+        if (args.empty() || args[0][0] == '#') continue;
         this->config->appendConverterFabric(args);
     }
 }

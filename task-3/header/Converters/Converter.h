@@ -8,7 +8,9 @@
  * Abstract interface for Converters.
  * */
 
-#include "Sample.h"
+#include "../Sample.h"
+
+#define SAMPLES_PER_SECOND 44100
 
 class Converter {
 public:

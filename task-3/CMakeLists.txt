@@ -4,15 +4,19 @@ project(22202_rozhkov_oop_cpp_task_3)
 set(CMAKE_CXX_STANDARD 14)
 
 add_executable(22202_rozhkov_oop_cpp_task_3
-        header/ArgHandler.h         source/ArgHandler.cpp
-        header/ConfigManager.h      source/ConfigManager.cpp
-        header/SoundProcessor.h     source/SoundProcessor.cpp
-        header/ConverterFabric.h
-        header/Converter.h
-        header/Sample.h             source/Sample.cpp
-        header/WAVWrapper.h         source/WAVWrapper.cpp
-        header/LineParser.h         source/LineParser.cpp
-        header/FileReader.h         source/FileReader.cpp
+        header/ArgHandler.h                     source/ArgHandler.cpp
+        header/ConfigManager.h                  source/ConfigManager.cpp
+        header/SoundProcessor.h                 source/SoundProcessor.cpp
+        header/Converters/ConverterFabric.h
+        header/Converters/ConverterMuteFabric.h source/Converters/ConverterMuteFabric.cpp
+        header/Converters/Converter.h
+        header/Converters/ConverterMix.h
+        header/Converters/ConverterMute.h       source/Converters/ConverterMute.cpp
+        header/Converters/ConverterReverb.h
+        header/Sample.h                         source/Sample.cpp
+        header/WAVWrapper.h                     source/WAVWrapper.cpp
+        header/LineParser.h                     source/LineParser.cpp
+        header/FileReader.h                     source/FileReader.cpp
         main.cpp
 )
 
