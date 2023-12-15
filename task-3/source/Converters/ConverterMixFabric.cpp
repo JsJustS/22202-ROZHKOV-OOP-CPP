@@ -13,3 +13,8 @@ Converter *ConverterMixFabric::getConverter() {
     return new ConverterMix(this->sideStreamId, this->secondStart, this->secondEnd);
 }
 
+std::string ConverterMixFabric::getHelp() {
+    //todo: help
+    return std::string();
+}
+

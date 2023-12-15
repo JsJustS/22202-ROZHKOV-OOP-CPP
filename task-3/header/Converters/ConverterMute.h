@@ -14,7 +14,6 @@ private:
     unsigned int currentSampleId;
 public:
     ConverterMute(unsigned int startSample, unsigned int lastSample);
-    std::string getHelp() override;
     Sample modify(int size, Sample* samples) override;
 };
 #endif //INC_22202_ROZHKOV_OOP_CPP_TASK_3_CONVERTERMUTE_H

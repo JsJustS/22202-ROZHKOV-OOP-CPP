@@ -13,3 +13,8 @@ ConverterFadeFabric::ConverterFadeFabric(unsigned int s, unsigned int e, int k, 
 Converter *ConverterFadeFabric::getConverter() {
     return new ConverterFade(this->secondStart, this->secondEnd, this->coef, this->isIn);
 }
+
+std::string ConverterFadeFabric::getHelp() {
+    //todo: help
+    return std::string();
+}

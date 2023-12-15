@@ -10,19 +10,13 @@ ConverterMix::ConverterMix(unsigned int sideStreamId, unsigned int secondStart, 
     this->currentSampleId = -1;
 }
 
-std::string ConverterMix::getHelp() {
-    //todo: help
-    return std::string();
-}
-
 Sample ConverterMix::modify(int size, Sample *samples) {
     this->currentSampleId++;
     if (this->currentSampleId < this->startSampleId || this->lastSampleId < this->currentSampleId) {
         return Sample(2).saveAsInt(samples[0].getAsInt());
     }
 
-    //todo: throw error
-    if (this->sideStreamId > size) {return Sample(2).saveAsInt(samples[0].getAsInt());}
+    if (this->sideStreamId > size) {throw OutOfRangeStreamIdError(this->sideStreamId, size);}
 
     if (!samples[this->sideStreamId - 1].isLoaded()) {
         return Sample(2).saveAsInt(samples[0].getAsInt());

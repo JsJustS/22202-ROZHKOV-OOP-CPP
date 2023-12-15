@@ -19,7 +19,7 @@ ArgHandler::ArgHandler(int argc, char** argv) {
         }
         return;
     }
-    //todo: throw error about wrong arguments
+    throw WrongArgumentsError("Wrong amount of input arguments passed to program: " + std::to_string(argc));
 }
 
 bool ArgHandler::hasInputFilenames() const {

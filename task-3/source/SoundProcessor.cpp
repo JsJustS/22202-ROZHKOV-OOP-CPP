@@ -106,5 +106,8 @@ void SoundProcessor::setInputFileNames(const std::vector<std::string> &fileNames
 
 void SoundProcessor::printOutHelp(std::ostream &out) {
     // todo: print out helper for every converter
-    out << "Help me please" << std::endl;
+    out << "How to use each converter:" << std::endl;
+    for (auto instance : something) {
+        out << instance.getHelp() << std::endl;
+    }
 }

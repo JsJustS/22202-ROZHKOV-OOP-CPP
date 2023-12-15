@@ -18,8 +18,3 @@ Sample ConverterMute::modify(int size, Sample *samples) {
     return Sample(2).saveAsInt(samples[0].getAsInt());
 }
 
-std::string ConverterMute::getHelp() {
-    //todo: help
-    return std::string();
-}
-

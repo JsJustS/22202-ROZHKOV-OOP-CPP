@@ -146,10 +146,7 @@ void WAVWrapper::loadSample(const Sample &sample) {
 }
 
 void WAVWrapper::writeSample() {
-    if (this->currentSample == nullptr) {
-        //todo: throw error that sample is not set
-        return;
-    }
+    int16_t sample = (this->currentSample == nullptr) ? 0: this->currentSample->getAsInt();
     // todo: writing by WAVWrapper class, not Sample class
     this->currentSample->write(*this->WAVOutputFileStream);
 }

@@ -12,3 +12,8 @@ ConverterMuteFabric::ConverterMuteFabric(unsigned int s, unsigned int e) {
     this->secondEnd = e;
 }
 
+std::string ConverterMuteFabric::getHelp() {
+    //todo: help
+    return std::string();
+}
+

@@ -14,6 +14,8 @@
 #include "Converters/ConverterFadeFabric.h"
 #include "LineParser.h"
 
+#include "errors/WrongArgumentsError.h"
+
 /**
  * Manages config (no way, couldn't guess).
  * Stores order of converters
@@ -24,6 +26,6 @@ private:
 public:
     std::vector<std::shared_ptr<ConverterFabric>> getFabrics();
 
-    void appendConverterFabric(std::vector<std::string>& args);
+    void appendConverterFabric(std::vector<std::string>& args) noexcept(false);
 };
 #endif //TASK_3_CONFIGMANAGER_H

@@ -14,18 +14,18 @@ void ConfigManager::appendConverterFabric(std::vector<std::string>& args) {
 
     std::string converterName = args[0];
     if (converterName == "mute") {
-        //todo: throw argument count error
-        if (args.size() != 3) { return; }
-        //todo: throw argument error
-        if (!LineParser::isNumeric(args[1]) || !LineParser::isNumeric(args[2])) {return;}
+        if (args.size() != 3) { throw WrongArgumentsError("Wrong amount of arguments for MUTE converter."); }
+        if (!LineParser::isNumeric(args[1]) || !LineParser::isNumeric(args[2])) {
+            throw WrongArgumentsError("Wrong argument types provided for MUTE converter.");
+        }
         int secondStart = std::stoi(args[1]);
         int secondEnd = std::stoi(args[2]);
         this->fabricList.push_back(std::make_shared<ConverterMuteFabric>(secondStart, secondEnd));
     } else if (converterName == "mix") {
-        //todo: throw argument count error
-        if (args.size() < 3 || args.size() > 4) { return; }
-        //todo: throw argument error
-        if (args[1][0] != '$' || !LineParser::isNumeric(args[1].substr(1)) || !LineParser::isNumeric(args[2])) {return;}
+        if (args.size() < 3 || args.size() > 4) { throw WrongArgumentsError("Wrong amount of arguments for MIX converter."); }
+        if (args[1][0] != '$' || !LineParser::isNumeric(args[1].substr(1)) || !LineParser::isNumeric(args[2])) {
+            throw WrongArgumentsError("Wrong argument types provided for MIX converter.");
+        }
         int streamId = std::stoi(args[1].substr(1));
         int secondStart = std::stoi(args[2]);
         int secondEnd;
@@ -37,10 +37,10 @@ void ConfigManager::appendConverterFabric(std::vector<std::string>& args) {
         }
         this->fabricList.push_back(std::make_shared<ConverterMixFabric>(streamId, secondStart, secondEnd));
     } else if (converterName == "fadein" || converterName == "fadeout") {
-        //todo: throw argument count error
-        if (args.size() != 4) { return; }
-        //todo: throw argument error
-        if (!LineParser::isNumeric(args[1]) || !LineParser::isNumeric(args[2]) || !LineParser::isNumeric(args[3])) {return;}
+        if (args.size() != 4) { throw WrongArgumentsError("Wrong amount of arguments for FADEIN/FADEOUT converter."); }
+        if (!LineParser::isNumeric(args[1]) || !LineParser::isNumeric(args[2]) || !LineParser::isNumeric(args[3])) {
+            throw WrongArgumentsError("Wrong argument types provided for FADEIN/FADEOUT converter.");
+        }
         int secondStart = std::stoi(args[1]);
         int secondEnd = std::stoi(args[2]);
         int k = std::stoi(args[3]);

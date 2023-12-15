@@ -6,6 +6,7 @@
 #define INC_22202_ROZHKOV_OOP_CPP_TASK_3_CONVERTERMIX_H
 
 #include "Converter.h"
+#include "../errors/OutOfRangeStreamIdError.h"
 
 class ConverterMix : public Converter {
 private:
@@ -15,7 +16,6 @@ private:
     unsigned int sideStreamId;
 public:
     ConverterMix(unsigned int sideStreamId, unsigned int secondStart, unsigned int secondEnd);
-    std::string getHelp() override;
     Sample modify(int size, Sample* samples) override;
 };
 #endif //INC_22202_ROZHKOV_OOP_CPP_TASK_3_CONVERTERMIX_H

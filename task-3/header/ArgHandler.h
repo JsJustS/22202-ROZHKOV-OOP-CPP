@@ -8,6 +8,8 @@
 #include <cstring>
 #include <vector>
 
+#include "errors/WrongArgumentsError.h"
+
 class ArgHandler {
 private:
     std::string configFileName;
@@ -15,7 +17,7 @@ private:
     std::vector<std::string> inputFileNames;
     bool helpRequested;
 public:
-    ArgHandler(int argc, char* argv[]);
+    ArgHandler(int argc, char* argv[]) noexcept(false);
 
     bool hasInputFilenames() const;
     std::vector<std::string> getInputFilenames() const;

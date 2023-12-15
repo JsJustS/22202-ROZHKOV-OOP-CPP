@@ -23,11 +23,6 @@ Sample ConverterFade::modify(int size, Sample *samples) {
     return Sample(2).saveAsInt(samples[0].getAsInt());
 }
 
-std::string ConverterFade::getHelp() {
-    //todo: help
-    return std::string();
-}
-
 double ConverterFade::easeFunc(double x) {
     return (this->isIn) ? pow(x, this->coef): 1.0 -pow(x, this->coef);
 }

@@ -16,5 +16,6 @@ private:
 public:
     ConverterMixFabric(unsigned int id, unsigned int s, unsigned int e);
     Converter* getConverter() override;
+    std::string getHelp() override;
 };
 #endif //INC_22202_ROZHKOV_OOP_CPP_TASK_3_CONVERTERMIXFABRIC_H
