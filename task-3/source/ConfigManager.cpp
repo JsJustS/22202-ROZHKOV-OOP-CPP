@@ -36,12 +36,15 @@ void ConfigManager::appendConverterFabric(std::vector<std::string>& args) {
             secondEnd = std::stoi(args[3]);
         }
         this->fabricList.push_back(std::make_shared<ConverterMixFabric>(streamId, secondStart, secondEnd));
-    } else if (converterName == "reverb") {
+    } else if (converterName == "fadein" || converterName == "fadeout") {
         //todo: throw argument count error
-        if (args.size() != 2) { return; }
+        if (args.size() != 4) { return; }
         //todo: throw argument error
-        if (!LineParser::isNumeric(args[1])) { return; }
-        int echoCount = std::stoi(args[1]);
-        this->fabricList.push_back(std::make_shared<ConverterReverbFabric>(echoCount));
+        if (!LineParser::isNumeric(args[1]) || !LineParser::isNumeric(args[2]) || !LineParser::isNumeric(args[3])) {return;}
+        int secondStart = std::stoi(args[1]);
+        int secondEnd = std::stoi(args[2]);
+        int k = std::stoi(args[3]);
+        bool isIn = converterName == "fadein";
+        this->fabricList.push_back(std::make_shared<ConverterFadeFabric>(secondStart, secondEnd, k, isIn));
     }
 }

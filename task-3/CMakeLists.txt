@@ -10,11 +10,11 @@ add_executable(22202_rozhkov_oop_cpp_task_3
         header/Converters/ConverterFabric.h
         header/Converters/ConverterMixFabric.h      source/Converters/ConverterMixFabric.cpp
         header/Converters/ConverterMuteFabric.h     source/Converters/ConverterMuteFabric.cpp
-        header/Converters/ConverterReverbFabric.h   source/Converters/ConverterReverbFabric.cpp
+        header/Converters/ConverterFadeFabric.h source/Converters/ConverterFadeFabric.cpp
         header/Converters/Converter.h
         header/Converters/ConverterMix.h            source/Converters/ConverterMix.cpp
         header/Converters/ConverterMute.h           source/Converters/ConverterMute.cpp
-        header/Converters/ConverterReverb.h         source/Converters/ConverterReverb.cpp
+        header/Converters/ConverterFade.h source/Converters/ConverterFade.cpp
         header/Sample.h                             source/Sample.cpp
         header/WAVWrapper.h                         source/WAVWrapper.cpp
         header/LineParser.h                         source/LineParser.cpp
