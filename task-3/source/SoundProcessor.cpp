@@ -105,9 +105,9 @@ void SoundProcessor::setInputFileNames(const std::vector<std::string> &fileNames
 }
 
 void SoundProcessor::printOutHelp(std::ostream &out) {
-    // todo: print out helper for every converter
+    this->config->generateEveryFabric();
     out << "How to use each converter:" << std::endl;
-    for (auto instance : something) {
-        out << instance.getHelp() << std::endl;
+    for (const auto& instance : this->config->getFabrics()) {
+        out << instance->getHelp() << std::endl;
     }
 }

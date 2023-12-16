@@ -15,6 +15,16 @@ Converter *ConverterFadeFabric::getConverter() {
 }
 
 std::string ConverterFadeFabric::getHelp() {
-    //todo: help
-    return std::string();
+    std::string help{};
+    help += "[fadein]:\n";
+    help += "Makes the sound begin with silence and increases it to the full volume gradually.\n";
+    help += "\tfirst operand - start second;\n";
+    help += "\tsecond operand - end second;\n";
+    help += "\tthird operand - coefficient for fading function;\n";
+    help += "[fadeout]:\n";
+    help += "Makes the sound begin with the full volume and decreases it to the silence gradually.\n";
+    help += "\tfirst operand - start second;\n";
+    help += "\tsecond operand - end second;\n";
+    help += "\tthird operand - coefficient for fading function;\n";
+    return help;
 }

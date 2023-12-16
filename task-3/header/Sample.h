@@ -32,7 +32,8 @@ public:
     int16_t getAsInt();
 
     bool isLoaded() const;
-    void read(std::ifstream& stream);
+    void markLoad(bool isLoaded);
+
     void write(std::ofstream& stream);
 };
 #endif //TASK_3_SAMPLE_H

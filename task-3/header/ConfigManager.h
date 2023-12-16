@@ -27,5 +27,7 @@ public:
     std::vector<std::shared_ptr<ConverterFabric>> getFabrics();
 
     void appendConverterFabric(std::vector<std::string>& args) noexcept(false);
+
+    void generateEveryFabric();
 };
 #endif //TASK_3_CONFIGMANAGER_H

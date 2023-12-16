@@ -14,7 +14,12 @@ Converter *ConverterMixFabric::getConverter() {
 }
 
 std::string ConverterMixFabric::getHelp() {
-    //todo: help
-    return std::string();
+    std::string help{};
+    help += "[mix]:\n";
+    help += "Mixes original input file with provided second stream\n";
+    help += "\tfirst operand - $id of the secondary input stream (starts from 1);\n";
+    help += "\tsecond operand - start second;\n";
+    help += "\tthird operand - end second;\n";
+    return help;
 }
 

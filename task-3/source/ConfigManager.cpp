@@ -20,6 +20,9 @@ void ConfigManager::appendConverterFabric(std::vector<std::string>& args) {
         }
         int secondStart = std::stoi(args[1]);
         int secondEnd = std::stoi(args[2]);
+        if (secondStart < 0 || secondEnd < 0) {
+            throw WrongArgumentsError("Negative argument values provided for MUTE converter.");
+        }
         this->fabricList.push_back(std::make_shared<ConverterMuteFabric>(secondStart, secondEnd));
     } else if (converterName == "mix") {
         if (args.size() < 3 || args.size() > 4) { throw WrongArgumentsError("Wrong amount of arguments for MIX converter."); }
@@ -28,6 +31,9 @@ void ConfigManager::appendConverterFabric(std::vector<std::string>& args) {
         }
         int streamId = std::stoi(args[1].substr(1));
         int secondStart = std::stoi(args[2]);
+        if (streamId < 1 || secondStart < 0) {
+            throw WrongArgumentsError("Negative argument values (or wrong stream id) provided for MIX converter.");
+        }
         int secondEnd;
         if (args.size() == 3) {
             secondEnd = -1;
@@ -44,7 +50,16 @@ void ConfigManager::appendConverterFabric(std::vector<std::string>& args) {
         int secondStart = std::stoi(args[1]);
         int secondEnd = std::stoi(args[2]);
         int k = std::stoi(args[3]);
+        if (secondStart < 0 || secondEnd < 0) {
+            throw WrongArgumentsError("Negative argument values provided for FADEIN/FADEOUT converter.");
+        }
         bool isIn = converterName == "fadein";
         this->fabricList.push_back(std::make_shared<ConverterFadeFabric>(secondStart, secondEnd, k, isIn));
     }
+}
+
+void ConfigManager::generateEveryFabric() {
+    this->fabricList.push_back(std::make_shared<ConverterMuteFabric>(0, 0));
+    this->fabricList.push_back(std::make_shared<ConverterMixFabric>(1, 0, 0));
+    this->fabricList.push_back(std::make_shared<ConverterFadeFabric>(0, 0, 0, false));
 }

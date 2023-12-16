@@ -21,15 +21,6 @@ Sample::Sample(uint16_t size) {
     this->loaded = false;
 }
 
-void Sample::read(std::ifstream& stream) {
-    if (!stream.eof()) {
-        stream.read(this->data, this->size);
-        this->loaded = true;
-    } else {
-        this->loaded = false;
-    }
-}
-
 void Sample::write(std::ofstream &stream) {
     stream.write(this->data, this->size);
 }
@@ -89,4 +80,8 @@ Sample::Sample(const Sample &otherSample) {
 
 bool Sample::isLoaded() const {
     return this->loaded;
+}
+
+void Sample::markLoad(bool isLoaded) {
+    this->loaded = isLoaded;
 }

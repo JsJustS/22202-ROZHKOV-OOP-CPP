@@ -30,7 +30,7 @@ public:
     SoundProcessor();
     ~SoundProcessor();
 
-    static void printOutHelp(std::ostream& out);
+    void printOutHelp(std::ostream& out);
 
     void loadConfig(const std::string& fileName);
     void setOutputFileName(const std::string& fileName);

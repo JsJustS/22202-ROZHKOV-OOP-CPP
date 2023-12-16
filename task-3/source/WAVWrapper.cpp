@@ -1,6 +1,7 @@
 //
 // Created by Just on 02.12.2023.
 //
+#include <cstring>
 #include "../header/WAVWrapper.h"
 
 WAVWrapper::WAVWrapper() {
@@ -131,9 +132,17 @@ Sample WAVWrapper::readSample() {
         this->currentSample = new Sample(this->headerData->header.BlockAlign);
     }
 
-    this->currentSample->read(*this->WAVInputFileStream);
-    // todo: reading by WAVWrapper class, not Sample class
-    // this->currentSample->operator[](i) = data[i];
+    if (!this->WAVInputFileStream->eof()) {
+        char* data = new char[2];
+        this->WAVInputFileStream->read(data, sizeof(int16_t));
+        for (int i = 0; i < 2; ++i) {
+            this->currentSample->operator[](i) = data[i];
+        }
+        this->currentSample->markLoad(true);
+        delete [] data;
+    } else {
+        this->currentSample->markLoad(false);
+    }
     return *this->currentSample;
 }
 
@@ -147,8 +156,7 @@ void WAVWrapper::loadSample(const Sample &sample) {
 
 void WAVWrapper::writeSample() {
     int16_t sample = (this->currentSample == nullptr) ? 0: this->currentSample->getAsInt();
-    // todo: writing by WAVWrapper class, not Sample class
-    this->currentSample->write(*this->WAVOutputFileStream);
+    this->WAVOutputFileStream->write(static_cast<char*>(static_cast<void*>(&(sample))), sizeof(int16_t));
 }
 
 int WAVWrapper::getSampleCount() const {

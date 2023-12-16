@@ -13,7 +13,11 @@ ConverterMuteFabric::ConverterMuteFabric(unsigned int s, unsigned int e) {
 }
 
 std::string ConverterMuteFabric::getHelp() {
-    //todo: help
-    return std::string();
+    std::string help{};
+    help += "[mute]:\n";
+    help += "Mutes audio in given time period\n";
+    help += "\tfirst operand - start second;\n";
+    help += "\tsecond operand - end second;\n";
+    return help;
 }
 

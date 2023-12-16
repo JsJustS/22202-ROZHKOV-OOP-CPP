@@ -16,7 +16,7 @@ int main(int argc, char *argv[]) {
         SoundProcessor soundProcessor{};
 
         if (argHandler.isHelpRequested()) {
-            SoundProcessor::printOutHelp(std::cout);
+            soundProcessor.printOutHelp(std::cout);
             return 0;
         }
 
