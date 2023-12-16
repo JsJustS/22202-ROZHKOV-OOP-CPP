@@ -129,7 +129,7 @@ void WAVWrapper::writeHeader() {
 
 Sample WAVWrapper::readSample() {
     if (this->currentSample == nullptr) {
-        this->currentSample = new Sample(this->headerData->header.BlockAlign);
+        this->currentSample = new Sample();
     }
 
     if (!this->WAVInputFileStream->eof()) {
@@ -148,7 +148,7 @@ Sample WAVWrapper::readSample() {
 
 void WAVWrapper::loadSample(const Sample &sample) {
     if (this->currentSample == nullptr) {
-        this->currentSample = new Sample(sample.getSize());
+        this->currentSample = new Sample();
     }
 
     this->currentSample->operator=(sample);

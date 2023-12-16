@@ -58,6 +58,8 @@ void SoundProcessor::process() {
             outputWAV.writeSample();
         }
         delete [] samples;
+    } else {
+        throw FileError("Could not open provided files.");
     }
 
     // close all files

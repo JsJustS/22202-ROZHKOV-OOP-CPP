@@ -15,6 +15,8 @@
 #include "LineParser.h"
 #include "FileReader.h"
 
+#include "errors/FileError.h"
+
 /**
  * Manages the process of conversion
  * */

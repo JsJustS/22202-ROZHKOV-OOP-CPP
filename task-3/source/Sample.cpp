@@ -10,19 +10,9 @@ Sample::~Sample() {
 }
 
 Sample::Sample() {
-    this->size = 2;
-    this->data = new Byte[2];
+    this->size = SAMPLE_SIZE;
+    this->data = new Byte[this->size];
     this->loaded = false;
-}
-
-Sample::Sample(uint16_t size) {
-    this->size = size;
-    this->data = new Byte[size];
-    this->loaded = false;
-}
-
-void Sample::write(std::ofstream &stream) {
-    stream.write(this->data, this->size);
 }
 
 uint16_t Sample::getSize() const {
@@ -54,7 +44,6 @@ Sample::Byte &Sample::operator[](int i) {
 Sample& Sample::saveAsInt(int16_t value) {
     this->loaded = true;
     std::memcpy(this->data, &value, sizeof(int16_t));
-    //this->data = static_cast<char*>(static_cast<void*>(&(value)));
     return *this;
 }
 

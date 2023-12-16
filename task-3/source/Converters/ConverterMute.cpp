@@ -13,8 +13,8 @@ ConverterMute::ConverterMute(unsigned int secondStart, unsigned int secondEnd) {
 Sample ConverterMute::modify(int size, Sample *samples) {
     this->currentSampleId++;
     if (this->startSampleId <= this->currentSampleId && this->currentSampleId <= this->lastSampleId) {
-        return Sample(2).saveAsInt(0);
+        return Sample().saveAsInt(0);
     }
-    return Sample(2).saveAsInt(samples[0].getAsInt());
+    return Sample().saveAsInt(samples[0].getAsInt());
 }
 

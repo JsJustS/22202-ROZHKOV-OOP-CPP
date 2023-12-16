@@ -8,7 +8,7 @@
 #include <cstdint>
 #include <fstream>
 
-#define SIGN_DELTA 32768
+#define SAMPLE_SIZE sizeof(int16_t)
 
 class Sample {
     typedef char Byte;
@@ -20,7 +20,6 @@ public:
     ~Sample();
     Sample();
     Sample(const Sample& otherSample);
-    explicit Sample(uint16_t size);
 
     Byte& operator[](int i);
 
@@ -33,7 +32,5 @@ public:
 
     bool isLoaded() const;
     void markLoad(bool isLoaded);
-
-    void write(std::ofstream& stream);
 };
 #endif //TASK_3_SAMPLE_H

@@ -18,9 +18,9 @@ Sample ConverterFade::modify(int size, Sample *samples) {
     if (this->startSampleId <= this->currentSampleId && this->currentSampleId <= this->lastSampleId) {
 
         this->modifier += this->delta;
-        return Sample(2).saveAsInt((int16_t)(samples[0].getAsInt() * easeFunc(this->modifier)));
+        return Sample().saveAsInt((int16_t)(samples[0].getAsInt() * easeFunc(this->modifier)));
     }
-    return Sample(2).saveAsInt(samples[0].getAsInt());
+    return Sample().saveAsInt(samples[0].getAsInt());
 }
 
 double ConverterFade::easeFunc(double x) {

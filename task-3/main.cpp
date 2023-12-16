@@ -21,7 +21,7 @@ int main(int argc, char *argv[]) {
         }
 
         if (!argHandler.hasConfigFilename() || !argHandler.hasInputFilenames() || !argHandler.hasInputFilenames()) {
-            return 0;
+            throw WrongArgumentsError("Wrong amount of input arguments passed to program");
         }
 
         soundProcessor.loadConfig(argHandler.getConfigFilename());
@@ -31,10 +31,10 @@ int main(int argc, char *argv[]) {
         soundProcessor.process();
     } catch (WrongArgumentsError& e) {
         std::cerr << "WrongArgumentsError: " << e.what() << std::endl;
-        return -2;
+        return -3;
     } catch (SoundProcessingError& e) {
         std::cerr << "SoundProcessingError: " << e.what() << std::endl;
-        return -1;
+        return -2;
     }
     return 0;
 }
