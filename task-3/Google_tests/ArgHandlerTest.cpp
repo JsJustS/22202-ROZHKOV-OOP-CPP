@@ -3,7 +3,6 @@
 //
 #include "gtest/gtest.h"
 #include "../header/ArgHandler.h"
-#include <cstring>
 
 TEST(ArgHandlerTests, simpleTest) {
     ASSERT_ANY_THROW(ArgHandler(0, nullptr));

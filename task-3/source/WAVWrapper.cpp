@@ -133,13 +133,12 @@ Sample WAVWrapper::readSample() {
     }
 
     if (!this->WAVInputFileStream->eof()) {
-        char* data = new char[2];
+        char data[2];
         this->WAVInputFileStream->read(data, sizeof(int16_t));
         for (int i = 0; i < 2; ++i) {
             this->currentSample->operator[](i) = data[i];
         }
         this->currentSample->markLoad(true);
-        delete [] data;
     } else {
         this->currentSample->markLoad(false);
     }

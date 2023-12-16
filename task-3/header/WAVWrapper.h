@@ -56,8 +56,6 @@ public:
         OUTPUT
     };
 
-    //WAVWrapper(const WAVWrapper& copy) = delete;
-
     WAVWrapper();
     explicit WAVWrapper(const std::string& fileName, MODE mode = INPUT);
     ~WAVWrapper();
