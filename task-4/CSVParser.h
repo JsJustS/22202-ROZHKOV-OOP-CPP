@@ -8,6 +8,10 @@
 template<typename... Args>
 class CSVParser {
 private:
+    std::ifstream file;
+    unsigned int lineToSkip;
+    std::string del;
+    std::string scr;
 
     class Iterator {
     private:
@@ -25,12 +29,46 @@ private:
         friend bool operator== (const Iterator& a, const Iterator& b);
         friend bool operator!= (const Iterator& a, const Iterator& b);
     };
+
+    template<>
+    long long parseString<long long>(std::string text);
+
+    template<>
+    unsigned long long parseString<unsigned long long>(std::string text);
+
+    template<>
+    long parseString<long >(std::string text);
+
+    template<>
+    unsigned long parseString<unsigned long>(std::string text);
+
+    template<>
+    int parseString<int>(std::string text);
+
+    template<>
+    std::string parseString<std::string>(std::string text);
+
+    template<>
+    char parseString<char>(std::string text);
+
+    template<>
+    float parseString<float>(std::string text);
+
+    template<>
+    double parseString<double>(std::string text);
+
+    template<>
+    long double parseString<long double>(std::string text);
 public:
     CSVParser(std::ifstream& file, unsigned int lineToSkip = 0,
               std::string del = ",", std::string scr = "\"\"");
 
     Iterator begin();
     Iterator end();
+
+    std::tuple<Args...> readLine();
+
+    bool isEOF();
 };
 
 #endif //TASK_4_CSVPARSER_H
