@@ -33,13 +33,16 @@ void testTuplePrinting() {
     std::cout << std::tuple<int, float, double, int, std::string>(1, 2.3f, 4.5, 6, "seven") << std::endl;
 }
 
-int main(int argc, char** argv) {
-//    std::ifstream file("test.csv");
-//    CSVParser<int, string> parser(file, 0);
-//    for (auto& parsedItem : parser) {
-//        std::cout << parsedItem << std::endl;
-//    }
+void testCSVParser() {
+    std::ifstream file("test.csv");
+    CSVParser<int, std::string> parser(file, 0);
+    for (const std::tuple<int, std::string>& rs : parser) {
+        std::cout << rs << std::endl;
+    }
+}
 
+int main(int argc, char** argv) {
     testTuplePrinting();
+    testCSVParser();
     return 0;
 }
