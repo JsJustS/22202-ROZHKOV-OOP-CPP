@@ -30,35 +30,60 @@ private:
         friend bool operator!= (const Iterator& a, const Iterator& b);
     };
 
-    template<>
-    long long parseString<long long>(std::string text);
+    template<typename T>
+    T parseString(std::string text) {
+        // todo: throw Unsupported Typer error
+    }
 
     template<>
-    unsigned long long parseString<unsigned long long>(std::string text);
+    long long parseString<long long>(std::string text) {
+        return 0;
+    }
 
     template<>
-    long parseString<long >(std::string text);
+    unsigned long long parseString<unsigned long long>(std::string text) {
+        return 0;
+    }
 
     template<>
-    unsigned long parseString<unsigned long>(std::string text);
+    long parseString<long >(std::string text) {
+        return 0;
+    }
 
     template<>
-    int parseString<int>(std::string text);
+    unsigned long parseString<unsigned long>(std::string text) {
+        return 0;
+    }
 
     template<>
-    std::string parseString<std::string>(std::string text);
+    int parseString<int>(std::string text) {
+        return 0;
+    }
 
     template<>
-    char parseString<char>(std::string text);
+    std::string parseString<std::string>(std::string text) {
+        return {};
+    }
 
     template<>
-    float parseString<float>(std::string text);
+    char parseString<char>(std::string text) {
+        return 0;
+    }
 
     template<>
-    double parseString<double>(std::string text);
+    float parseString<float>(std::string text) {
+        return .0f;
+    }
 
     template<>
-    long double parseString<long double>(std::string text);
+    double parseString<double>(std::string text) {
+        return 0;
+    }
+
+    template<>
+    long double parseString<long double>(std::string text) {
+        return 0;
+    }
 public:
     CSVParser(std::ifstream& file, unsigned int lineToSkip = 0,
               std::string del = ",", std::string scr = "\"\"");
