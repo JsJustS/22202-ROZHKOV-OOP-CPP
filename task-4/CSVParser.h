@@ -5,10 +5,12 @@
 #ifndef TASK_4_CSVPARSER_H
 #define TASK_4_CSVPARSER_H
 
+#include <fstream>
+
 template<typename... Args>
 class CSVParser {
 private:
-    std::ifstream file;
+    std::ifstream& file;
     unsigned int lineToSkip;
     std::string del;
     std::string scr;
@@ -37,7 +39,7 @@ private:
 
     template<>
     long long parseString<long long>(std::string text) {
-        return 0;
+        return detail::parseString<long long >(text);
     }
 
     template<>
@@ -95,5 +97,10 @@ public:
 
     bool isEOF();
 };
+
+template<typename... Args>
+CSVParser<Args...>::CSVParser(std::ifstream &file, unsigned int lineToSkip, std::string del, std::string scr) {
+
+}
 
 #endif //TASK_4_CSVPARSER_H
