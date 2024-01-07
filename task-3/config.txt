@@ -1,0 +1,7 @@
+fadein 0 1 5
+mute 3 5
+fadeout 8 9 -5
+mute 9 10
+fadeout 2 3 1
+fadein 5 6 1
+mix $2 2 6
