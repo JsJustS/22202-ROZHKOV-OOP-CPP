@@ -13,6 +13,15 @@
 #include "errors/CSVError.h"
 
 namespace csv {
+    inline char getSpecialChar(char c) {
+        switch (c) {
+            case '\t': return 't';
+            case '\n': return 'n';
+            case '\r': return 'r';
+            default: return 0;
+        }
+    }
+
     template <typename T> inline bool isType(const std::string& s) {
         std::istringstream iss(s);
         T dummy;
@@ -23,12 +32,16 @@ namespace csv {
     template <typename T> inline T convert(const std::string&, unsigned int row, unsigned int col) {
         throw CSVError(row, col, "Unsupported Type.");
     }
+    template <> inline std::string convert<std::string>(const std::string& value, unsigned int, unsigned int) {
+        return value;
+    }
     template <> inline int convert<int>(const std::string& value, unsigned int row, unsigned int col) {
         if (!isType<int>(value)) throw CSVError(row, col, "Unsupported Type.");
         return std::stoi(value);
     }
-    template <> inline std::string convert<std::string>(const std::string& value, unsigned int, unsigned int) {
-        return value;
+    template <> inline double convert<double>(const std::string& value, unsigned int row, unsigned int col) {
+        if (!isType<double>(value)) throw CSVError(row, col, "Unsupported Type.");
+        return std::stod(value);
     }
 }
 
@@ -37,7 +50,7 @@ class CSVParser {
 private:
     std::ifstream& file;
     char del;
-    std::string scr;
+    char scr;
 
     std::tuple<Args...>* data;
     unsigned int linesRead;
@@ -82,38 +95,17 @@ private:
     }
 
     // Функция, которая преобразует вектор строк в кортеж разных типов
-    std::tuple<Args...> vectorToTuple(const std::vector<std::string>& input) {
-        if (input.size() != sizeof...(Args)) {
-            throw CSVError(this->linesRead, "Number of rows does not match the number of provided types.");
-        }
-        return vectorToTupleHelper(input, std::make_index_sequence<sizeof...(Args)>());
-    }
+    std::tuple<Args...> vectorToTuple(const std::vector<std::string>& input);
 
-    std::vector<std::string> splitString(const std::string& str) {
-        std::vector<std::string> result;
-        std::stringstream ss(str);
-        std::string token;
-        while (std::getline(ss, token, this->del)) {
-            result.push_back(token);
-        }
-        return result;
-    }
+    std::vector<std::string> splitString(const std::string& str);
 
-    std::tuple<Args...> parseLine(const std::string& line) {
+    std::tuple<Args...> parseLine(const std::string& line);
 
-        std::vector<std::string> values = splitString(line);
-
-        // Проверяем, что количество значений соответствует количеству типов в std::tuple
-        if (values.size() != sizeof...(Args)) {
-            throw CSVError(this->linesRead, "Number of rows does not match the number of provided types.");
-        }
-
-        return vectorToTuple(values);
-    }
+    std::string screen(const std::string& line);
 
 public:
     explicit CSVParser(std::ifstream& file, unsigned int lineToSkip = 0,
-                       char del = ',', const std::string& scr = "\"\"");
+                       char del = ',', char scr = '"');
 
     ~CSVParser() {
         delete this->data;
@@ -127,23 +119,7 @@ public:
         return Iterator(this, nullptr);
     }
 
-    std::tuple<Args...>* readLine() {
-        if (this->isEOF()) {
-            delete this->data;
-            this->data = nullptr;
-        } else {
-            this->linesRead++;
-
-            std::string line;
-            if (!std::getline(this->file, line) || line.empty()) {
-                delete this->data;
-                this->data = nullptr;
-                return this->data;
-            }
-            *this->data = this->parseLine(line);
-        }
-        return this->data;
-    }
+    std::tuple<Args...>* readLine();
 
     bool isEOF() {
         return this->file.eof() || !this->file.is_open();
@@ -151,9 +127,86 @@ public:
 };
 
 template<typename... Args>
+std::string CSVParser<Args...>::screen(const std::string& stringToScreen) {
+    std::string result(stringToScreen);
+
+    for (int i = 0; i < result.size(); ++i) {
+        if (result[i] != this->scr) {continue;}
+        if (i + 1 >= result.size()) {continue;}
+
+        // обрабатываем символ типа "{scr}{char}"
+        // проверим, что это действительно спецсимвол, а не прикол
+        char replacement = csv::getSpecialChar(result[i + 1]);
+        if (!replacement) {continue;}
+
+        int replaceIndex = i;
+        for (int j = replaceIndex; j < result.size(); ++j) {
+            std::swap(result[j], result[j + 1]);
+        }
+        result[replaceIndex] = replacement;
+
+        result.resize(result.size() - 1);
+
+    }
+
+    return result;
+}
+
+template<typename... Args>
+std::tuple<Args...> CSVParser<Args...>::vectorToTuple(const std::vector<std::string> &input) {
+    if (input.size() != sizeof...(Args)) {
+        throw CSVError(this->linesRead, "Number of rows does not match the number of provided types.");
+    }
+    return vectorToTupleHelper(input, std::make_index_sequence<sizeof...(Args)>());
+}
+
+template<typename... Args>
+std::vector<std::string> CSVParser<Args...>::splitString(const std::string &str) {
+    std::vector<std::string> result;
+    std::stringstream ss(str);
+    std::string token;
+    while (std::getline(ss, token, this->del)) {
+        result.push_back(token);
+    }
+    return result;
+}
+
+template<typename... Args>
+std::tuple<Args...> CSVParser<Args...>::parseLine(const std::string &line) {
+
+    // Сначала экранируем, потом сплитим в вектор
+    std::vector<std::string> values = splitString(screen(line));
+
+    // Проверяем, что количество значений соответствует количеству типов в std::tuple
+    if (values.size() != sizeof...(Args)) {
+        throw CSVError(this->linesRead, "Number of rows does not match the number of provided types.");
+    }
+
+    return vectorToTuple(values);
+}
+
+template<typename... Args>
+std::tuple<Args...> *CSVParser<Args...>::readLine() {
+    if (this->isEOF()) {
+        delete this->data;
+        this->data = nullptr;
+    } else {
+        this->linesRead++;
+
+        std::string line;
+        if (!std::getline(this->file, line) || line.empty()) {
+            delete this->data;
+            this->data = nullptr;
+            return this->data;
+        }
+        *this->data = this->parseLine(line);
+    }
+    return this->data;
+}
+
+template<typename... Args>
 CSVParser<Args...>::CSVParser(std::ifstream &file, unsigned int lineToSkip,
-                              char del, const std::string& scr) : file(file), del(del), linesRead(0) {
-    this->scr = scr;
+                              char del, char scr) : file(file), del(del), linesRead(0), scr(scr) {
     this->data = new std::tuple<Args...>;
 
     for (int i = 0; i < lineToSkip; ++i) {this->readLine();}
