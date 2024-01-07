@@ -42,7 +42,7 @@ void testCSVParser() {
 }
 
 int main(int argc, char** argv) {
-    testTuplePrinting();
+    //testTuplePrinting();
     testCSVParser();
     return 0;
 }
