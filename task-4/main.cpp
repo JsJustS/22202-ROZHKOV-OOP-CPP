@@ -41,8 +41,32 @@ void testCSVParser() {
     }
 }
 
+void testErrorMessages() {
+    try {
+        std::ifstream file("test.csv");
+        CSVParser<float, std::string> parser(file, 0);
+        for (const std::tuple<float, std::string>& rs : parser) {
+            std::cout << rs << std::endl;
+        }
+    } catch (CSVError& e) {
+        std::cout << e.what() << std::endl;
+    }
+
+    try {
+        std::ifstream file("test2.csv");
+        CSVParser<int, std::string> parser(file, 0);
+        for (const std::tuple<int, std::string>& rs : parser) {
+            std::cout << rs << std::endl;
+        }
+    } catch (CSVError& e) {
+        std::cout << e.what() << std::endl;
+    }
+}
+
 int main(int argc, char** argv) {
     //testTuplePrinting();
     testCSVParser();
+    std::cout << "next part" << std::endl;
+    testErrorMessages();
     return 0;
 }

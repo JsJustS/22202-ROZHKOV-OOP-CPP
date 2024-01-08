@@ -155,7 +155,7 @@ std::string CSVParser<Args...>::screen(const std::string& stringToScreen) {
 template<typename... Args>
 std::tuple<Args...> CSVParser<Args...>::vectorToTuple(const std::vector<std::string> &input) {
     if (input.size() != sizeof...(Args)) {
-        throw CSVError(this->linesRead, "Number of rows does not match the number of provided types.");
+        throw CSVError(this->linesRead, "Number of columns does not match the number of provided types.");
     }
     return vectorToTupleHelper(input, std::make_index_sequence<sizeof...(Args)>());
 }
@@ -179,7 +179,7 @@ std::tuple<Args...> CSVParser<Args...>::parseLine(const std::string &line) {
 
     // Проверяем, что количество значений соответствует количеству типов в std::tuple
     if (values.size() != sizeof...(Args)) {
-        throw CSVError(this->linesRead, "Number of rows does not match the number of provided types.");
+        throw CSVError(this->linesRead, "Number of columns does not match the number of provided types.");
     }
 
     return vectorToTuple(values);
