@@ -154,6 +154,7 @@ std::string CSVParser<Args...>::screen(const std::string& stringToScreen) {
 
 template<typename... Args>
 std::tuple<Args...> CSVParser<Args...>::vectorToTuple(const std::vector<std::string> &input) {
+    // Проверяем, что количество значений соответствует количеству типов в std::tuple
     if (input.size() != sizeof...(Args)) {
         throw CSVError(this->linesRead, "Number of columns does not match the number of provided types.");
     }
@@ -176,11 +177,6 @@ std::tuple<Args...> CSVParser<Args...>::parseLine(const std::string &line) {
 
     // Сначала экранируем, потом сплитим в вектор
     std::vector<std::string> values = splitString(screen(line));
-
-    // Проверяем, что количество значений соответствует количеству типов в std::tuple
-    if (values.size() != sizeof...(Args)) {
-        throw CSVError(this->linesRead, "Number of columns does not match the number of provided types.");
-    }
 
     return vectorToTuple(values);
 }
